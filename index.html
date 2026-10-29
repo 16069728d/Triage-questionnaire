@@ -1,9 +1,9 @@
-html_code = """<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-HK">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>新症約期問卷 (分流評估)</title>
+<title>物理治療部 新症約期間卷</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
 html,body{
@@ -112,7 +112,7 @@ html,body{
 #prev-btn{display:none;background:#dfe6e9;color:#2d3436;}
 #prev-btn:hover{background:#b2bec3;}
 
-/* ── Explanation panel ── */
+/* ── Explanation panel (question level) ── */
 #explanation-panel{
   display:none;
   background:#fff9e6;border:2px solid #f0d060;border-radius:12px;
@@ -143,7 +143,7 @@ html,body{
 .answer-btn{
   border:none;border-radius:14px;
   padding:1.5rem 1rem;
-  font-size:2rem;font-weight:bold;
+  font-size:1.6rem;font-weight:bold;
   color:#fff;cursor:pointer;
   transition:transform .15s,opacity .15s,box-shadow .3s,filter .3s;
   box-shadow:0 5px 0 rgba(0,0,0,.22);
@@ -176,9 +176,10 @@ html,body{
 }
 
 .clr-red{background:#e74c3c;}
+.clr-orange{background:#e67e22;}
 .clr-yellow{background:#f1c40f; color:#222;}
-.clr-blue{background:#3498db;}
-.clr-green{background:#2ecc71;}
+.clr-green{background:#26ad60;}
+.clr-blue{background:#1368ce;}
 .btn-emoji{font-size:2.4rem;line-height:1;}
 
 /* ── Result screen ── */
@@ -189,9 +190,9 @@ html,body{
   box-shadow:0 8px 32px rgba(0,0,0,.3);
   margin-bottom:1.5rem;
 }
-.result-msg{font-size:1.6rem;line-height:1.9;margin-bottom:1.8rem;text-align:center;}
-.result-scores{font-size:3.5rem;font-weight:bold;color:#1e3d59;}
-.result-scores span{display:block;margin:.5rem 0; font-size:2.5rem;}
+.result-msg{font-size:1.6rem;line-height:1.9;margin-bottom:1.8rem;text-align:left;}
+.result-scores{font-size:2rem;font-weight:bold;color:#1e3d59;text-align:left;line-height:1.6;}
+.result-scores span{display:inline-block;}
 .result-credit{font-size:1rem;color:#aaa;margin-top:1.4rem;}
 #restart-btn{
   padding:1.2rem 3rem;background:#17b978;color:#fff;
@@ -204,7 +205,7 @@ html,body{
 
 @media(min-width:600px){
   #question-text{font-size:2.2rem;}
-  .answer-btn{font-size:2.2rem;padding:1.8rem 1.2rem;}
+  .answer-btn{font-size:2rem;padding:1.8rem 1.2rem;}
   .btn-emoji{font-size:2.8rem;}
   .result-msg{font-size:1.8rem;}
   .explain-text{font-size:1.6rem;}
@@ -222,17 +223,18 @@ html,body{
 <div id="no-speech-banner">此瀏覽器不支援語音朗讀</div>
 
 <div id="app">
-  <div class="header-title">新症約期問卷</div>
-  <div class="header-sub">雅麗氏何妙齡那打素醫院 物理治療部</div>
+  <div class="header-title">新症約期間卷 (Triage)</div>
+  <div class="header-sub">新界東醫院聯網 物理治療部</div>
 
   <div id="intro-screen">
     <div class="intro-card">
       <div class="intro-title">病人須知：</div>
-      <div class="intro-text">此問卷用作新症分流及安排物理治療。請根據轉介信上的病情，回答以下 11 條問題。</div>
+      <div class="intro-text">此問卷將會協助我們了解您的最新狀況及分流，請如實回答下列問題。</div>
       <div class="intro-title" style="margin-top:15px; font-size:1.3rem;">說明：</div>
       <ul class="intro-list">
-        <li>請仔細聆聽每條問題及口語解釋，並選擇最合適的答案。</li>
-        <li>完成後，請將手機/平板電腦交回接待處。</li>
+        <li>這份問卷共有 11 題。</li>
+        <li>請根據您<strong>最近的情況</strong>，選擇最適合的答案。</li>
+        <li>請仔細聆聽每條問題及口語解釋，並作答。</li>
       </ul>
     </div>
     <button id="start-btn">開始做問卷</button>
@@ -249,7 +251,7 @@ html,body{
       <div class="btn-row">
         <button class="card-btn" id="prev-btn">⬅️ 返回上一題</button>
         <button class="card-btn" id="replay-btn">🔊 重播</button>
-        <button class="card-btn" id="explain-btn">💡 解釋</button>
+        <button class="card-btn" id="explain-btn">💡 聽解釋</button>
       </div>
       <div id="explanation-panel">
         <div class="explain-text" id="explain-text"></div>
@@ -261,9 +263,9 @@ html,body{
 
   <div id="result-screen">
     <div class="result-card">
-      <div class="result-msg" id="result-msg"></div>
+      <div class="result-msg" id="result-msg">非常感謝您完成了這份調查。請將結果交回物理治療部接待處。</div>
       <div class="result-scores" id="result-scores"></div>
-      <div class="result-credit">雅麗氏何妙齡那打素醫院 物理治療部</div>
+      <div class="result-credit">新界東醫院聯網 物理治療部製作</div>
     </div>
     <button id="restart-btn">🔄 重新開始</button>
   </div>
@@ -276,109 +278,87 @@ html,body{
   /* ═══════════════════ DATA (Triage 11 Questions) ═══════════════════ */
   var questions = [
     {
-      id: 1,
-      text: '1. 我選擇物理治療的時間',
-      explanation: '即係你想揀咩時間做物理治療？',
+      id: 1, text: '我選擇物理治療的時間：', explanation: '請問你想約邊個時間做物理治療？',
       options: [
-        { label: '任何時間', emoji: '🕒', color: 'clr-blue' },
-        { label: '上午', emoji: '🌅', color: 'clr-blue' },
-        { label: '下午', emoji: '🌇', color: 'clr-blue' }
+        { label: '任何時間', emoji: '🕒', val: '任何時間', color: 'clr-blue' },
+        { label: '上午 (8:45-12:30)', emoji: '🌅', val: '上午', color: 'clr-yellow' },
+        { label: '下午 (1:30-5:15)', emoji: '🌇', val: '下午', color: 'clr-orange' }
       ]
     },
     {
-      id: 2,
-      text: '2. 請問你體內有沒有植入受磁波影響儀器或任何電子儀器？例如：心臟起搏器 / 深層腦部刺激器 / 人工耳窩等 / 腦室腹腔分流器？',
-      explanation: '即係你身體入面有冇裝過電子儀器，例如心臟起搏器？',
+      id: 2, text: '請問你體內有沒有植入受磁波影響儀器或任何電子儀器？', explanation: '請問你身體入面有冇裝到一啲會受磁場影響嘅電子儀器，例如心臟起搏器？',
       options: [
-        { label: '有', emoji: '⚠️', color: 'clr-red' },
-        { label: '沒有', emoji: '❌', color: 'clr-green' }
+        { label: '有', emoji: '✔️', val: '有', color: 'clr-red' },
+        { label: '沒有', emoji: '❌', val: '沒有', color: 'clr-blue' }
       ]
     },
     {
-      id: 3,
-      text: '3. 你有否因轉介書內的病情而曾接受公立醫院物理治療（6個月內）？',
-      explanation: '即係最近半年，你有冇因為今次嘅病去過政府醫院做物理治療？',
+      id: 3, text: '你有否因轉介書內的病情而曾接受公立醫院物理治療 (6個月內)？', explanation: '過去六個月內，你有冇因為今次轉介信上面嘅同一個病，去過政府醫院睇物理治療？',
       options: [
-        { label: '有', emoji: '✔️', color: 'clr-yellow' },
-        { label: '沒有', emoji: '❌', color: 'clr-blue' }
+        { label: '有', emoji: '✔️', val: 1, color: 'clr-red' },
+        { label: '沒有', emoji: '❌', val: 0, color: 'clr-blue' }
       ]
     },
     {
-      id: 4,
-      text: '4. 最近 3 個月內你是否因轉介書內的病情而需住院接受治療？',
-      explanation: '即係最近三個月，你有冇因為今次嘅病住過醫院？',
+      id: 4, text: '最近3個月內你是否因轉介書內的病情而需住院接受治療？', explanation: '過去三個月內，你有冇因為今次轉介信上面嘅病，而需要入院留醫？',
       options: [
-        { label: '有', emoji: '🏥', color: 'clr-yellow' },
-        { label: '沒有', emoji: '❌', color: 'clr-blue' }
+        { label: '有', emoji: '✔️', val: 1, color: 'clr-red' },
+        { label: '沒有', emoji: '❌', val: 0, color: 'clr-blue' }
       ]
     },
     {
-      id: 5,
-      text: '5. 這次治療轉介書內的病情是否屬於工傷（3個月內）？',
-      explanation: '即係今次睇嘅病，係咪最近三個月內發生嘅工傷？',
+      id: 5, text: '這次治療轉介書內的病情是否屬於工傷 (3個月內)？', explanation: '今次轉介信上面講嘅病，係咪屬於三個月之內發生嘅工傷？',
       options: [
-        { label: '有', emoji: '👷', color: 'clr-yellow' },
-        { label: '沒有', emoji: '❌', color: 'clr-blue' }
+        { label: '是', emoji: '✔️', val: 1, color: 'clr-red' },
+        { label: '否', emoji: '❌', val: 0, color: 'clr-blue' }
       ]
     },
     {
-      id: 6,
-      text: '6. 現在是否因這個轉介書內的病情而放病假？',
-      explanation: '即係你而家有冇因為今次嘅病而放緊病假？',
+      id: 6, text: '現在是否因這個轉介書內的病情而放病假？', explanation: '你依家係咪因為今次呢個病而放緊病假？',
       options: [
-        { label: '有', emoji: '🛌', color: 'clr-yellow' },
-        { label: '沒有', emoji: '❌', color: 'clr-blue' }
+        { label: '有', emoji: '✔️', val: 1, color: 'clr-red' },
+        { label: '沒有', emoji: '❌', val: 0, color: 'clr-blue' }
       ]
     },
     {
-      id: 7,
-      text: '7. 你的病情是否因嚴重意外受傷引起（3個月內）？（例如：骨折、交通意外、高處墮下等等）',
-      explanation: '即係今次嘅病，係咪最近三個月內因為嚴重意外而受傷，例如骨折或者車禍？',
+      id: 7, text: '你的病情是否因嚴重意外受傷引起 (3個月內)？', explanation: '你今次嘅病，係咪因為三個月內發生嘅嚴重意外引起？例如骨折或者交通意外。',
       options: [
-        { label: '有', emoji: '💥', color: 'clr-red' },
-        { label: '沒有', emoji: '❌', color: 'clr-green' }
+        { label: '有', emoji: '✔️', val: 1, color: 'clr-red' },
+        { label: '沒有', emoji: '❌', val: 0, color: 'clr-blue' }
       ]
     },
     {
-      id: 8,
-      text: '8. 這個轉介書內的病情持續了多久？',
-      explanation: '即係今次轉介信上面寫嘅病痛，已經持續咗幾耐？',
+      id: 8, text: '這個轉介書內的病情持續了多久？', explanation: '轉介信上面講嘅呢個病，已經痛咗或者維持咗幾耐？',
       options: [
-        { label: '多過 3 個月', emoji: '📅', color: 'clr-red' },
-        { label: '多過 6 個星期', emoji: '📆', color: 'clr-yellow' },
-        { label: '少過 6 個星期', emoji: '🗓️', color: 'clr-green' }
+        { label: '多過3個月', emoji: '🕒', val: 1, color: 'clr-blue' },
+        { label: '多過6個星期', emoji: '🕓', val: 2, color: 'clr-yellow' },
+        { label: '少過6個星期', emoji: '🕔', val: 3, color: 'clr-red' }
       ]
     },
     {
-      id: 9,
-      text: '9. 整體來說，你的病情在最近四星期內之進展情況是：',
-      explanation: '即係最近呢四個星期，你嘅病情係好咗、無變、定係差咗？',
+      id: 9, text: '整體來說，你的病情在最近四星期內之進展情況是：', explanation: '整體嚟講，你覺得最近呢四個星期，你嘅病情係好轉咗，無變，定係差咗？',
       options: [
-        { label: '好轉', emoji: '👍', color: 'clr-green' },
-        { label: '沒有改變', emoji: '😐', color: 'clr-yellow' },
-        { label: '惡化', emoji: '👎', color: 'clr-red' }
+        { label: '好轉', emoji: '📈', val: 1, color: 'clr-blue' },
+        { label: '沒有改變', emoji: '➖', val: 2, color: 'clr-yellow' },
+        { label: '惡化', emoji: '📉', val: 3, color: 'clr-red' }
       ]
     },
     {
-      id: 10,
-      text: '10. 這個轉介書內的病情/問題，對你應付工作/學業/家務等的能力有多大影響？',
-      explanation: '即係今次嘅病，有幾大程度影響到你平時返工、返學或者做家務？',
+      id: 10, text: '這個轉介書內的病情/問題，對你應付工作/學業/家務等的能力有多大影響？', explanation: '今次呢個病，對你平時返工、返學或者做家務嘅能力，影響有幾大？',
       options: [
-        { label: '沒有影響', emoji: '😄', color: 'clr-green' },
-        { label: '輕度影響', emoji: '🙂', color: 'clr-blue' },
-        { label: '頗大影響，仍可勉強', emoji: '😓', color: 'clr-yellow' },
-        { label: '不能完成所需要求', emoji: '❌', color: 'clr-red' }
+        { label: '沒有影響', emoji: '🟢', val: 1, color: 'clr-blue' },
+        { label: '輕度影響', emoji: '🟡', val: 2, color: 'clr-green' },
+        { label: '頗大影響，勉強完成', emoji: '🟠', val: 3, color: 'clr-orange' },
+        { label: '不能完成所需要求', emoji: '🔴', val: 4, color: 'clr-red' }
       ]
     },
     {
-      id: 11,
-      text: '11. 根據你今天的情況，你的痛楚/麻痺/僵硬/乏力等病徵的嚴重程度是：',
-      explanation: '即係今日覺得痛、痺或者冇力嘅情況，有幾嚴重？',
+      id: 11, text: '根據你今天的情況，你的痛楚/麻痺/僵硬/乏力等病徵的嚴重程度是：', explanation: '根據你今日嘅感覺，你覺得痛楚或者麻痺嘅嚴重程度係點？',
       options: [
-        { label: '沒有問題', emoji: '😄', color: 'clr-green' },
-        { label: '輕微 / 一般', emoji: '🙂', color: 'clr-blue' },
-        { label: '嚴重', emoji: '😣', color: 'clr-yellow' },
-        { label: '極嚴重', emoji: '😭', color: 'clr-red' }
+        { label: '沒有問題', emoji: '🟢', val: 1, color: 'clr-blue' },
+        { label: '輕微 / 一般', emoji: '🟡', val: 2, color: 'clr-green' },
+        { label: '嚴重', emoji: '🟠', val: 3, color: 'clr-orange' },
+        { label: '極嚴重', emoji: '🔴', val: 4, color: 'clr-red' }
       ]
     }
   ];
@@ -394,7 +374,6 @@ html,body{
   var repeatTimer    = null;
   var speechSeqId    = 0;
   var explanationOpen= false;
-
   var expLoopId      = 0;
   var expLoopTimer   = null;
 
@@ -416,51 +395,35 @@ html,body{
   var elAnswers      = document.getElementById('answers-area');
   var elQuiz         = document.getElementById('quiz-area');
   var elResult       = document.getElementById('result-screen');
-  var elResultMsg    = document.getElementById('result-msg');
   var elResultScore  = document.getElementById('result-scores');
   var elRestart      = document.getElementById('restart-btn');
 
   /* ═══════════════════════════════════════════════════
-     ENHANCED CANTONESE VOICE SELECTION
+     CANTONESE VOICE SELECTION
      ═══════════════════════════════════════════════════ */
   function applyVoice(utter){
     var voices = window.speechSynthesis.getVoices();
     var cantoneseVoice = null;
-
     for(var i = 0; i < voices.length; i++){
       var v = voices[i];
       var lang = (v.lang || '').toLowerCase();
       var name = (v.name || '').toLowerCase();
-
       if(lang === 'zh-hk' || lang.indexOf('yue') !== -1 || name.indexOf('cantonese') !== -1 || name.indexOf('粵語') !== -1){
         cantoneseVoice = v;
         break;
       }
     }
-
     if(!cantoneseVoice){
       for(var i = 0; i < voices.length; i++){
         var v = voices[i];
         var lang = (v.lang || '').toLowerCase();
         var name = (v.name || '').toLowerCase();
-        
-        if(lang.indexOf('zh-cn') !== -1 || name.indexOf('mandarin') !== -1 || name.indexOf('普通话') !== -1 || name.indexOf('國語') !== -1){
-          continue;
-        }
-
-        if(lang.indexOf('zh') === 0){
-          cantoneseVoice = v;
-          break;
-        }
+        if(lang.indexOf('zh-cn') !== -1 || name.indexOf('mandarin') !== -1 || name.indexOf('普通话') !== -1 || name.indexOf('國語') !== -1) continue;
+        if(lang.indexOf('zh') === 0){ cantoneseVoice = v; break; }
       }
     }
-
-    if(cantoneseVoice){
-      utter.voice = cantoneseVoice;
-      utter.lang = cantoneseVoice.lang;
-    } else {
-      utter.lang = 'zh-HK';
-    }
+    if(cantoneseVoice){ utter.voice = cantoneseVoice; utter.lang = cantoneseVoice.lang; } 
+    else { utter.lang = 'zh-HK'; }
     utter.rate = 0.8;
   }
 
@@ -473,9 +436,7 @@ html,body{
   function startRepeatTimer(){
     stopRepeatTimer();
     repeatTimer = setTimeout(function(){
-      if(!locked && !explanationOpen && elQuiz.style.display !== 'none'){
-        speakSequence();
-      }
+      if(!locked && !explanationOpen && elQuiz.style.display !== 'none'){ speakSequence(); }
     }, 10000);
   }
 
@@ -494,7 +455,7 @@ html,body{
     if(!speechOK || !speechEnabled){ if(cb) cb(); return; }
     var utter = new SpeechSynthesisUtterance(text);
     applyVoice(utter);
-    utter.onend   = function(){ if(myId === expLoopId && cb) cb(); };
+    utter.onend = function(){ if(myId === expLoopId && cb) cb(); };
     utter.onerror = function(){ if(myId === expLoopId && cb) cb(); };
     window.speechSynthesis.speak(utter);
   }
@@ -542,9 +503,7 @@ html,body{
     speechSeqId++;
     var mySeqId = speechSeqId;
     var q = questions[currentIndex];
-    var items = [];
-
-    items.push({ text: q.text, buttonIndex: -1 });
+    var items = [{ text: q.text, buttonIndex: -1 }];
 
     var btns = elAnswers.querySelectorAll('.answer-btn');
     for(var i = 0; i < btns.length; i++){
@@ -584,7 +543,6 @@ html,body{
         idx++;
         setTimeout(speakNext, 400);
       };
-
       window.speechSynthesis.speak(utter);
     }
     speakNext();
@@ -595,8 +553,7 @@ html,body{
     explanationOpen = true;
     elExplainPanel.style.display = 'block';
     elExplainBtn.classList.add('active');
-    var q = questions[currentIndex];
-    startExpLoop(q.explanation);
+    startExpLoop(questions[currentIndex].explanation);
   }
 
   function closeExplanation(){
@@ -629,11 +586,8 @@ html,body{
     elQNum.textContent = '問題 ' + (currentIndex + 1);
     elQText.textContent = q.text;
 
-    if(currentIndex > 0){
-      elPrevBtn.style.display = 'inline-flex';
-    } else {
-      elPrevBtn.style.display = 'none';
-    }
+    if(currentIndex > 0) elPrevBtn.style.display = 'inline-flex';
+    else elPrevBtn.style.display = 'none';
 
     elExplainPanel.style.display = 'none';
     elExplainBtn.classList.remove('active');
@@ -641,12 +595,12 @@ html,body{
 
     elAnswers.innerHTML = '';
 
-    var prevVal = answers[currentIndex];
-    
-    // Dynamically render options based on question config
-    q.options.forEach(function(opt, index) {
-      addButton(opt.emoji, opt.label, index, opt.color, prevVal === index);
-    });
+    // Dynamic button generation from JSON options
+    for(var i=0; i<q.options.length; i++) {
+        var opt = q.options[i];
+        var isSelected = (answers[currentIndex] === opt.val);
+        addButton(opt.emoji, opt.label, opt.val, opt.color, isSelected);
+    }
 
     window.scrollTo(0, 0);
     speakSequence();
@@ -655,9 +609,8 @@ html,body{
   function addButton(emoji, label, value, colorClass, isSelected){
     var btn = document.createElement('button');
     btn.className = 'answer-btn ' + colorClass;
-    if(isSelected){
-      btn.classList.add('selected');
-    }
+    if(isSelected) btn.classList.add('selected');
+    
     if(emoji){
       var es = document.createElement('span');
       es.className = 'btn-emoji';
@@ -667,6 +620,7 @@ html,body{
     var ts = document.createElement('span');
     ts.textContent = label;
     btn.appendChild(ts);
+    
     btn.setAttribute('data-speech', label);
     btn.addEventListener('click', function(){ onAnswer(btn, value); });
     elAnswers.appendChild(btn);
@@ -698,7 +652,6 @@ html,body{
     }, 350);
   }
 
-  /* ═══════════════════ PREVIOUS QUESTION ═══════════════════ */
   function prevQuestion(){
     if(currentIndex <= 0) return;
     stopRepeatTimer();
@@ -707,12 +660,11 @@ html,body{
     if(speechOK) window.speechSynthesis.cancel();
     clearAllGlow();
     closeExplanation();
-
     currentIndex--;
     renderQuestion();
   }
 
-  /* ═══════════════════ RESULT ═══════════════════ */
+  /* ═══════════════════ RESULT & SCORING LOGIC ═══════════════════ */
   function showResult(){
     stopRepeatTimer();
     stopExpLoop();
@@ -723,19 +675,65 @@ html,body{
     elQuiz.style.display = 'none';
     elResult.style.display = 'block';
 
-    elResultMsg.innerHTML =
-      '非常感謝您完成了這份分流問卷。<br><br>' +
-      '<strong>請勿關閉此頁面，並將手機/平板電腦交回物理治療部接待處，謝謝！</strong>';
+    // Retrieve variables for logic rules
+    var ans1 = answers[0]; // Time preference
+    var ans2 = answers[1]; // Implants
+    
+    // Q3 to Q7 check (value 1 represents "Yes/有")
+    var q3_yes = (answers[2] === 1);
+    var q4_7_yes = (answers[3] === 1 || answers[4] === 1 || answers[5] === 1 || answers[6] === 1);
+    
+    // Q8-Q11 Score
+    var score8_11 = answers[7] + answers[8] + answers[9] + answers[10];
 
-    elResultScore.innerHTML = '<span>✅ 問卷已完成</span>';
+    // Priority Check Structure
+    var triage = "R (例行)";
+    var isP1 = false;
+    var isP2 = false;
+    var isR = false;
 
+    // Rule 1: Any tick in Q4-7 -> P1
+    if(q4_7_yes) isP1 = true;
+    
+    // Rule 2: Q3 ticked -> R
+    if(q3_yes) isR = true;
+    
+    // Rule 3: Q8-11 score == 14 -> P1
+    if(score8_11 === 14) isP1 = true;
+    
+    // Rule 4: Q8-11 score 11 to 13 -> P2 (Since 14 is P1)
+    if(score8_11 >= 11 && score8_11 <= 13) isP2 = true;
+    
+    // Rule 5: Q8-11 score <= 10 -> R
+    if(score8_11 <= 10) isR = true;
+
+    // Apply strict hierarchy: P1 overrides P2, P2 overrides R.
+    if(isP1) triage = "P1 (第一優先)";
+    else if(isP2) triage = "P2 (第二優先)";
+    else triage = "R (例行)";
+
+    // Format Result HTML String
+    var resHTML = "<div style='font-size:1.4rem; padding:10px;'>";
+    resHTML += "<strong>1. 物理治療時間：</strong> <span style='color:#1368ce'>" + ans1 + "</span><br><br>";
+    resHTML += "<strong>2. 植入電子儀器：</strong> <span style='color:#1368ce'>" + ans2 + "</span><br>";
+    resHTML += "<hr style='margin:1.5rem 0; opacity:0.3'>";
+    resHTML += "<strong>第 8-11 題 總分：</strong> <span style='font-size:2.2rem; color:#e21b3c;'>" + score8_11 + "</span><span style='font-size:1.3rem'> / 14</span><br><br>";
+    
+    // Color code triage output
+    var triageColor = "#17b978";
+    if (triage.includes("P1")) triageColor = "#e21b3c";
+    else if (triage.includes("P2")) triageColor = "#e67e22";
+
+    resHTML += "<strong>分流結果 (Triage)：</strong><br><span style='font-size:2.5rem; color:" + triageColor + ";'>" + triage + "</span>";
+    resHTML += "</div>";
+
+    elResultScore.innerHTML = resHTML;
     window.scrollTo(0, 0);
 
-    // Speak ending message
-    if(!speechOK || !speechEnabled) return;
-    var utter = new SpeechSynthesisUtterance('非常感謝您完成了這份分流問卷。請勿關閉此頁面，並將設備交回物理治療部接待處，謝謝！');
+    // Speak ending
+    var utter = new SpeechSynthesisUtterance("非常感謝您完成了這份調查。請將結果交回物理治療部接待處。");
     applyVoice(utter);
-    window.speechSynthesis.speak(utter);
+    if(speechOK && speechEnabled) window.speechSynthesis.speak(utter);
   }
 
   /* ═══════════════════ INIT ═══════════════════ */
@@ -811,9 +809,3 @@ html,body{
 </script>
 </body>
 </html>
-"""
-
-with open("triage_questionnaire.html", "w", encoding="utf-8") as f:
-    f.write(html_code)
-
-print("[file-tag: triage_questionnaire.html]")
