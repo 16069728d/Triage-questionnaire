@@ -68,15 +68,22 @@ html,body{
 .intro-text{font-size:1.2rem;line-height:1.6;margin-bottom:1.2rem;}
 .intro-list{font-size:1.2rem;line-height:1.6;padding-left:1.5rem;}
 .intro-list li{margin-bottom:0.6rem;}
-#start-btn{
-  padding:1.2rem 3rem;background:#17b978;color:#fff;
-  border:none;border-radius:30px;font-size:1.8rem;font-weight:bold;
-  cursor:pointer;box-shadow:0 4px 0 rgba(0,0,0,.15);
-  transition:background .2s;
-  -webkit-tap-highlight-color:transparent;
-  margin-top: 10px;
+
+/* Flashing Start Button */
+@keyframes flashBtn {
+  0% { box-shadow: 0 0 0 0 rgba(23, 185, 120, 0.7); transform: scale(1); }
+  50% { box-shadow: 0 0 0 20px rgba(23, 185, 120, 0); transform: scale(1.05); }
+  100% { box-shadow: 0 0 0 0 rgba(23, 185, 120, 0); transform: scale(1); }
 }
-#start-btn:hover{background:#129661;}
+#start-btn{
+  padding:1.4rem 3.5rem;background:#17b978;color:#fff;
+  border:none;border-radius:30px;font-size:2rem;font-weight:bold;
+  cursor:pointer;
+  transition:background .2s;
+  margin-top: 20px;
+  animation: flashBtn 1.8s infinite;
+}
+#start-btn:hover{background:#129661; animation: none; transform: scale(1.02);}
 
 /* ── Progress ── */
 #quiz-area{display:none;width:100%;flex-direction:column;align-items:center;}
@@ -191,7 +198,7 @@ html,body{
   margin-bottom:1.5rem;
 }
 .result-msg{font-size:1.6rem;line-height:1.9;margin-bottom:1.8rem;text-align:left;}
-.result-scores{font-size:2rem;font-weight:bold;color:#1e3d59;text-align:left;line-height:1.6;}
+.result-scores{font-size:1.2rem;color:#444;text-align:left;line-height:1.8;}
 .result-scores span{display:inline-block;}
 .result-credit{font-size:1rem;color:#aaa;margin-top:1.4rem;}
 #restart-btn{
@@ -234,7 +241,7 @@ html,body{
       <ul class="intro-list">
         <li>這份問卷共有 11 題。</li>
         <li>請根據您<strong>最近的情況</strong>，選擇最適合的答案。</li>
-        <li>請仔細聆聽每條問題及口語解釋，並作答。</li>
+        <li>請仔細聆聽每條問題，並作答。</li>
       </ul>
     </div>
     <button id="start-btn">開始做問卷</button>
@@ -255,7 +262,7 @@ html,body{
       </div>
       <div id="explanation-panel">
         <div class="explain-text" id="explain-text"></div>
-        <button class="explain-listen-btn" id="explain-listen-btn">🔊 再聽一次解釋</button>
+        <button class="explain-listen-btn" id="explain-listen-btn">🔊 再聽一次</button>
       </div>
     </div>
     <div id="answers-area"></div>
@@ -263,7 +270,7 @@ html,body{
 
   <div id="result-screen">
     <div class="result-card">
-      <div class="result-msg" id="result-msg">非常感謝您完成了這份調查。請將結果交回物理治療部接待處。</div>
+      <div class="result-msg" id="result-msg">非常感謝您完成了這份調查。請將結果頁面交回給物理治療部接待處。</div>
       <div class="result-scores" id="result-scores"></div>
       <div class="result-credit">新界東醫院聯網 物理治療部製作</div>
     </div>
@@ -278,7 +285,7 @@ html,body{
   /* ═══════════════════ DATA (Triage 11 Questions) ═══════════════════ */
   var questions = [
     {
-      id: 1, text: '我選擇物理治療的時間：', explanation: '請問你想約邊個時間做物理治療？',
+      id: 1, text: '1. 我選擇物理治療的時間：', explanation: '請問你想約邊個時間做物理治療？',
       options: [
         { label: '任何時間', emoji: '🕒', val: '任何時間', color: 'clr-blue' },
         { label: '上午 (8:45-12:30)', emoji: '🌅', val: '上午', color: 'clr-yellow' },
@@ -286,49 +293,49 @@ html,body{
       ]
     },
     {
-      id: 2, text: '請問你體內有沒有植入受磁波影響儀器或任何電子儀器？', explanation: '請問你身體入面有冇裝到一啲會受磁場影響嘅電子儀器，例如心臟起搏器？',
+      id: 2, text: '2. 請問你體內有沒有植入受磁波影響儀器或任何電子儀器？', explanation: '請問你身體入面有冇裝到一啲會受磁場影響嘅電子儀器，例如心臟起搏器？',
       options: [
         { label: '有', emoji: '✔️', val: '有', color: 'clr-red' },
         { label: '沒有', emoji: '❌', val: '沒有', color: 'clr-blue' }
       ]
     },
     {
-      id: 3, text: '你有否因轉介書內的病情而曾接受公立醫院物理治療 (6個月內)？', explanation: '過去六個月內，你有冇因為今次轉介信上面嘅同一個病，去過政府醫院睇物理治療？',
+      id: 3, text: '3. 你有否因轉介書內的病情而曾接受公立醫院物理治療 (6個月內)？', explanation: '過去六個月內，你有冇因為今次轉介信上面嘅同一個病，去過政府醫院睇物理治療？',
       options: [
         { label: '有', emoji: '✔️', val: 1, color: 'clr-red' },
         { label: '沒有', emoji: '❌', val: 0, color: 'clr-blue' }
       ]
     },
     {
-      id: 4, text: '最近3個月內你是否因轉介書內的病情而需住院接受治療？', explanation: '過去三個月內，你有冇因為今次轉介信上面嘅病，而需要入院留醫？',
+      id: 4, text: '4. 最近3個月內你是否因轉介書內的病情而需住院接受治療？', explanation: '過去三個月內，你有冇因為今次轉介信上面嘅病，而需要入院留醫？',
       options: [
         { label: '有', emoji: '✔️', val: 1, color: 'clr-red' },
         { label: '沒有', emoji: '❌', val: 0, color: 'clr-blue' }
       ]
     },
     {
-      id: 5, text: '這次治療轉介書內的病情是否屬於工傷 (3個月內)？', explanation: '今次轉介信上面講嘅病，係咪屬於三個月之內發生嘅工傷？',
+      id: 5, text: '5. 這次治療轉介書內的病情是否屬於工傷 (3個月內)？', explanation: '今次轉介信上面講嘅病，係咪屬於三個月之內發生嘅工傷？',
       options: [
         { label: '是', emoji: '✔️', val: 1, color: 'clr-red' },
         { label: '否', emoji: '❌', val: 0, color: 'clr-blue' }
       ]
     },
     {
-      id: 6, text: '現在是否因這個轉介書內的病情而放病假？', explanation: '你依家係咪因為今次呢個病而放緊病假？',
+      id: 6, text: '6. 現在是否因這個轉介書內的病情而放病假？', explanation: '你依家係咪因為今次呢個病而放緊病假？',
       options: [
         { label: '有', emoji: '✔️', val: 1, color: 'clr-red' },
         { label: '沒有', emoji: '❌', val: 0, color: 'clr-blue' }
       ]
     },
     {
-      id: 7, text: '你的病情是否因嚴重意外受傷引起 (3個月內)？', explanation: '你今次嘅病，係咪因為三個月內發生嘅嚴重意外引起？例如骨折或者交通意外。',
+      id: 7, text: '7. 你的病情是否因嚴重意外受傷引起 (3個月內)？', explanation: '你今次嘅病，係咪因為三個月內發生嘅嚴重意外引起？例如骨折或者交通意外。',
       options: [
         { label: '有', emoji: '✔️', val: 1, color: 'clr-red' },
         { label: '沒有', emoji: '❌', val: 0, color: 'clr-blue' }
       ]
     },
     {
-      id: 8, text: '這個轉介書內的病情持續了多久？', explanation: '轉介信上面講嘅呢個病，已經痛咗或者維持咗幾耐？',
+      id: 8, text: '8. 這個轉介書內的病情持續了多久？', explanation: '轉介信上面講嘅呢個病，已經痛咗或者維持咗幾耐？',
       options: [
         { label: '多過3個月', emoji: '🕒', val: 1, color: 'clr-blue' },
         { label: '多過6個星期', emoji: '🕓', val: 2, color: 'clr-yellow' },
@@ -336,7 +343,7 @@ html,body{
       ]
     },
     {
-      id: 9, text: '整體來說，你的病情在最近四星期內之進展情況是：', explanation: '整體嚟講，你覺得最近呢四個星期，你嘅病情係好轉咗，無變，定係差咗？',
+      id: 9, text: '9. 整體來說，你的病情在最近四星期內之進展情況是：', explanation: '整體嚟講，你覺得最近呢四個星期，你嘅病情係好轉咗，無變，定係差咗？',
       options: [
         { label: '好轉', emoji: '📈', val: 1, color: 'clr-blue' },
         { label: '沒有改變', emoji: '➖', val: 2, color: 'clr-yellow' },
@@ -344,7 +351,7 @@ html,body{
       ]
     },
     {
-      id: 10, text: '這個轉介書內的病情/問題，對你應付工作/學業/家務等的能力有多大影響？', explanation: '今次呢個病，對你平時返工、返學或者做家務嘅能力，影響有幾大？',
+      id: 10, text: '10. 這個轉介書內的病情/問題，對你應付工作/學業/家務等的能力有多大影響？', explanation: '今次呢個病，對你平時返工、返學或者做家務嘅能力，影響有幾大？',
       options: [
         { label: '沒有影響', emoji: '🟢', val: 1, color: 'clr-blue' },
         { label: '輕度影響', emoji: '🟡', val: 2, color: 'clr-green' },
@@ -353,7 +360,7 @@ html,body{
       ]
     },
     {
-      id: 11, text: '根據你今天的情況，你的痛楚/麻痺/僵硬/乏力等病徵的嚴重程度是：', explanation: '根據你今日嘅感覺，你覺得痛楚或者麻痺嘅嚴重程度係點？',
+      id: 11, text: '11. 根據你今天的情況，你的痛楚/麻痺/僵硬/乏力等病徵的嚴重程度是：', explanation: '根據你今日嘅感覺，你覺得痛楚或者麻痺嘅嚴重程度係點？',
       options: [
         { label: '沒有問題', emoji: '🟢', val: 1, color: 'clr-blue' },
         { label: '輕微 / 一般', emoji: '🟡', val: 2, color: 'clr-green' },
@@ -468,28 +475,23 @@ html,body{
     speechSeqId++;
 
     var myId = expLoopId;
-    var qText = questions[currentIndex].text;
-
     expLoopSpeak(explanationText, myId, function(){
       if(myId !== expLoopId) return;
       expLoopTimer = setTimeout(function(){
         if(myId !== expLoopId) return;
-        expLoopRepeatCycle(myId, qText, explanationText);
+        expLoopRepeatCycle(myId, explanationText);
       }, 10000);
     });
   }
 
-  function expLoopRepeatCycle(myId, qText, eText){
+  function expLoopRepeatCycle(myId, eText){
     if(myId !== expLoopId) return;
-    expLoopSpeak(qText, myId, function(){
+    expLoopSpeak(eText, myId, function(){
       if(myId !== expLoopId) return;
-      expLoopSpeak(eText, myId, function(){
+      expLoopTimer = setTimeout(function(){
         if(myId !== expLoopId) return;
-        expLoopTimer = setTimeout(function(){
-          if(myId !== expLoopId) return;
-          expLoopRepeatCycle(myId, qText, eText);
-        }, 10000);
-      });
+        expLoopRepeatCycle(myId, eText);
+      }, 10000);
     });
   }
 
@@ -503,7 +505,9 @@ html,body{
     speechSeqId++;
     var mySeqId = speechSeqId;
     var q = questions[currentIndex];
-    var items = [{ text: q.text, buttonIndex: -1 }];
+    
+    // SKIP FORMAL TEXT - ONLY READ COLLOQUIAL EXPLANATION
+    var items = [{ text: q.explanation, buttonIndex: -1 }];
 
     var btns = elAnswers.querySelectorAll('.answer-btn');
     for(var i = 0; i < btns.length; i++){
@@ -540,6 +544,40 @@ html,body{
       utter.onerror = function(){
         if(mySeqId !== speechSeqId) return;
         clearAllGlow();
+        idx++;
+        setTimeout(speakNext, 400);
+      };
+      window.speechSynthesis.speak(utter);
+    }
+    speakNext();
+  }
+
+  /* ═══════════════════ SPEECH: RESULT ═══════════════════ */
+  function speakResult(){
+    if(!speechOK || !speechEnabled) return;
+    window.speechSynthesis.cancel();
+    stopRepeatTimer();
+    speechSeqId++;
+    var mySeqId = speechSeqId;
+
+    var lines = [
+      '非常感謝您完成了這份調查。',
+      '請勿關閉此頁面，並將平板交回給物理治療部接待處職員。'
+    ];
+
+    var idx = 0;
+    function speakNext(){
+      if(mySeqId !== speechSeqId) return;
+      if(idx >= lines.length) return;
+      var utter = new SpeechSynthesisUtterance(lines[idx]);
+      applyVoice(utter);
+      utter.onend = function(){
+        if(mySeqId !== speechSeqId) return;
+        idx++;
+        setTimeout(speakNext, 400);
+      };
+      utter.onerror = function(){
+        if(mySeqId !== speechSeqId) return;
         idx++;
         setTimeout(speakNext, 400);
       };
@@ -591,11 +629,10 @@ html,body{
 
     elExplainPanel.style.display = 'none';
     elExplainBtn.classList.remove('active');
-    elExplainText.textContent = '（' + q.explanation + '）';
+    elExplainText.textContent = '（口語：' + q.explanation + '）';
 
     elAnswers.innerHTML = '';
 
-    // Dynamic button generation from JSON options
     for(var i=0; i<q.options.length; i++) {
         var opt = q.options[i];
         var isSelected = (answers[currentIndex] === opt.val);
@@ -676,10 +713,10 @@ html,body{
     elResult.style.display = 'block';
 
     // Retrieve variables for logic rules
-    var ans1 = answers[0]; // Time preference
-    var ans2 = answers[1]; // Implants
+    var ans1 = answers[0]; // Q1 Time preference
+    var ans2 = answers[1]; // Q2 Implants
     
-    // Q3 to Q7 check (value 1 represents "Yes/有")
+    // Q3 to Q7 check (value 1 represents "Yes/有/是")
     var q3_yes = (answers[2] === 1);
     var q4_7_yes = (answers[3] === 1 || answers[4] === 1 || answers[5] === 1 || answers[6] === 1);
     
@@ -687,53 +724,42 @@ html,body{
     var score8_11 = answers[7] + answers[8] + answers[9] + answers[10];
 
     // Priority Check Structure
-    var triage = "R (例行)";
+    var triageCode = "3"; // Default (3 = R)
     var isP1 = false;
     var isP2 = false;
     var isR = false;
 
     // Rule 1: Any tick in Q4-7 -> P1
     if(q4_7_yes) isP1 = true;
-    
     // Rule 2: Q3 ticked -> R
     if(q3_yes) isR = true;
-    
     // Rule 3: Q8-11 score == 14 -> P1
     if(score8_11 === 14) isP1 = true;
-    
-    // Rule 4: Q8-11 score 11 to 13 -> P2 (Since 14 is P1)
+    // Rule 4: Q8-11 score 11 to 13 -> P2
     if(score8_11 >= 11 && score8_11 <= 13) isP2 = true;
-    
     // Rule 5: Q8-11 score <= 10 -> R
     if(score8_11 <= 10) isR = true;
 
     // Apply strict hierarchy: P1 overrides P2, P2 overrides R.
-    if(isP1) triage = "P1 (第一優先)";
-    else if(isP2) triage = "P2 (第二優先)";
-    else triage = "R (例行)";
+    if(isP1) triageCode = "1";
+    else if(isP2) triageCode = "2";
+    else triageCode = "3";
 
-    // Format Result HTML String
-    var resHTML = "<div style='font-size:1.4rem; padding:10px;'>";
-    resHTML += "<strong>1. 物理治療時間：</strong> <span style='color:#1368ce'>" + ans1 + "</span><br><br>";
-    resHTML += "<strong>2. 植入電子儀器：</strong> <span style='color:#1368ce'>" + ans2 + "</span><br>";
-    resHTML += "<hr style='margin:1.5rem 0; opacity:0.3'>";
-    resHTML += "<strong>第 8-11 題 總分：</strong> <span style='font-size:2.2rem; color:#e21b3c;'>" + score8_11 + "</span><span style='font-size:1.3rem'> / 14</span><br><br>";
-    
-    // Color code triage output
-    var triageColor = "#17b978";
-    if (triage.includes("P1")) triageColor = "#e21b3c";
-    else if (triage.includes("P2")) triageColor = "#e67e22";
+    // Format Result HTML String (Low-key for clerks)
+    var resHTML = "<div style='font-size:1.1rem; padding:10px; color:#444; border-top: 1px solid #eee; margin-top: 20px; padding-top: 20px;'>";
+    resHTML += "<strong>紀錄摘要：</strong><br><br>";
+    resHTML += "時間偏好: " + ans1 + "<br>";
+    resHTML += "電子儀器: " + ans2 + "<br>";
+    resHTML += "</div>";
 
-    resHTML += "<strong>分流結果 (Triage)：</strong><br><span style='font-size:2.5rem; color:" + triageColor + ";'>" + triage + "</span>";
+    // Clerks Ref Code Format: T-[TriageCategory]-[Score]
+    resHTML += "<div style='text-align:right; font-size:1rem; color:#aaa; margin-top:30px; letter-spacing: 1px;'>";
+    resHTML += "Ref: T-" + triageCode + "-" + score8_11;
     resHTML += "</div>";
 
     elResultScore.innerHTML = resHTML;
     window.scrollTo(0, 0);
-
-    // Speak ending
-    var utter = new SpeechSynthesisUtterance("非常感謝您完成了這份調查。請將結果交回物理治療部接待處。");
-    applyVoice(utter);
-    if(speechOK && speechEnabled) window.speechSynthesis.speak(utter);
+    speakResult();
   }
 
   /* ═══════════════════ INIT ═══════════════════ */
@@ -789,10 +815,12 @@ html,body{
   function onOverlayTap(){
     speechEnabled = true;
     elOverlay.style.display = 'none';
-    var dummy = new SpeechSynthesisUtterance('');
-    dummy.lang = 'zh-HK';
-    dummy.volume = 0;
-    window.speechSynthesis.speak(dummy);
+    
+    // Read out the start button instruction upon unmuting
+    var startSpeech = new SpeechSynthesisUtterance('請撳下面綠色掣，開始做問卷');
+    applyVoice(startSpeech);
+    window.speechSynthesis.speak(startSpeech);
+    
     elIntro.style.display = 'flex';
   }
 
