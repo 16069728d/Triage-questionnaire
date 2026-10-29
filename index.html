@@ -1,0 +1,819 @@
+html_code = """<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>新症約期問卷 (分流評估)</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{
+  height:100%;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang HK","Microsoft JhengHei",Roboto,sans-serif;
+  background:#1e3d59;
+  color:#fff;
+  overflow-x:hidden;
+}
+
+/* ── Speech unlock overlay ── */
+#speech-overlay{
+  position:fixed;top:0;left:0;right:0;bottom:0;
+  background:rgba(0,0,0,0.88);
+  display:flex;flex-direction:column;
+  justify-content:center;align-items:center;
+  z-index:1000;cursor:pointer;
+  -webkit-tap-highlight-color:transparent;
+}
+#speech-overlay .tap-icon{
+  font-size:6rem;margin-bottom:1.5rem;
+  animation:pulse 1.4s ease-in-out infinite;
+}
+#speech-overlay .tap-text{font-size:2.8rem;font-weight:bold;}
+#speech-overlay .tap-sub{font-size:1.3rem;margin-top:.8rem;opacity:.7;}
+@keyframes pulse{
+  0%,100%{transform:scale(1);opacity:1}
+  50%{transform:scale(1.18);opacity:.65}
+}
+
+/* ── No-speech banner ── */
+#no-speech-banner{
+  display:none;position:fixed;top:0;left:0;right:0;
+  background:#e74c3c;color:#fff;text-align:center;
+  padding:.7rem;font-size:1.2rem;z-index:500;
+}
+
+/* ── App container ── */
+#app{
+  min-height:100vh;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:flex-start;
+  padding:1rem .7rem 2rem;
+}
+
+/* ── Header ── */
+.header-title{font-size:1.8rem;font-weight:bold;text-align:center;margin-top:.4rem;}
+.header-sub{font-size:1.1rem;text-align:center;opacity:.75;margin-top:.2rem;margin-bottom:.8rem;}
+
+/* ── Intro Screen ── */
+#intro-screen{
+  display:none;width:100%;max-width:700px;
+  flex-direction:column;align-items:center;
+}
+.intro-card{
+  background:#fff;color:#333;border-radius:16px;
+  padding:2rem 1.4rem;text-align:left;
+  box-shadow:0 8px 32px rgba(0,0,0,.3);
+  margin-bottom:1.5rem;width:100%;
+}
+.intro-title{color:#1368ce;font-size:1.5rem;font-weight:bold;margin-bottom:.8rem;}
+.intro-text{font-size:1.2rem;line-height:1.6;margin-bottom:1.2rem;}
+.intro-list{font-size:1.2rem;line-height:1.6;padding-left:1.5rem;}
+.intro-list li{margin-bottom:0.6rem;}
+#start-btn{
+  padding:1.2rem 3rem;background:#17b978;color:#fff;
+  border:none;border-radius:30px;font-size:1.8rem;font-weight:bold;
+  cursor:pointer;box-shadow:0 4px 0 rgba(0,0,0,.15);
+  transition:background .2s;
+  -webkit-tap-highlight-color:transparent;
+  margin-top: 10px;
+}
+#start-btn:hover{background:#129661;}
+
+/* ── Progress ── */
+#quiz-area{display:none;width:100%;flex-direction:column;align-items:center;}
+#progress-area{width:100%;max-width:700px;margin-bottom:1rem;}
+#progress-text{font-size:1.6rem;font-weight:bold;text-align:center;margin-bottom:.5rem;}
+#progress-bar-bg{width:100%;height:12px;background:rgba(255,255,255,.2);border-radius:6px;overflow:hidden;}
+#progress-bar-fill{height:100%;width:0;background:#17b978;border-radius:6px;transition:width .4s ease;}
+
+/* ── Question card ── */
+#question-card{
+  background:#fff;color:#222;border-radius:16px;
+  padding:1.6rem 1.2rem 1rem;
+  width:100%;max-width:700px;text-align:center;
+  box-shadow:0 8px 32px rgba(0,0,0,.3);
+  margin-bottom:1.2rem;
+}
+#question-number{font-size:1.2rem;color:#999;margin-bottom:.35rem;font-weight:bold;}
+#question-text{font-size:1.8rem;font-weight:bold;line-height:1.5;}
+
+/* ── Button row ── */
+.btn-row{
+  display:flex;justify-content:center;gap:.6rem;margin-top:1rem;flex-wrap:wrap;
+}
+.card-btn{
+  display:inline-flex;align-items:center;gap:.3rem;
+  padding:.6rem 1.8rem;
+  background:#ececec;color:#555;border:none;border-radius:25px;
+  font-size:1.3rem;cursor:pointer;transition:background .2s;
+  -webkit-tap-highlight-color:transparent;
+}
+.card-btn:hover{background:#ddd;}
+.card-btn.active{background:#ffeaa7;color:#856404;}
+#prev-btn{display:none;background:#dfe6e9;color:#2d3436;}
+#prev-btn:hover{background:#b2bec3;}
+
+/* ── Explanation panel ── */
+#explanation-panel{
+  display:none;
+  background:#fff9e6;border:2px solid #f0d060;border-radius:12px;
+  padding:1.2rem 1rem;margin-top:1rem;text-align:left;
+  animation:fadeSlideDown .3s ease;
+}
+@keyframes fadeSlideDown{
+  from{opacity:0;transform:translateY(-10px);}
+  to{opacity:1;transform:translateY(0);}
+}
+.explain-text{font-size:1.4rem;line-height:1.6;color:#333;}
+.explain-listen-btn{
+  display:inline-flex;align-items:center;gap:.3rem;
+  margin-top:.8rem;padding:.4rem 1.2rem;
+  background:#f0d060;color:#6b5900;border:none;border-radius:20px;
+  font-size:1.1rem;cursor:pointer;transition:background .2s;
+  -webkit-tap-highlight-color:transparent;
+}
+.explain-listen-btn:hover{background:#e6c340;}
+
+/* ── Answers area ── */
+#answers-area{
+  width:100%;max-width:700px;
+  display:grid;grid-template-columns:1fr;gap:.75rem;
+}
+
+/* ── Answer buttons ── */
+.answer-btn{
+  border:none;border-radius:14px;
+  padding:1.5rem 1rem;
+  font-size:2rem;font-weight:bold;
+  color:#fff;cursor:pointer;
+  transition:transform .15s,opacity .15s,box-shadow .3s,filter .3s;
+  box-shadow:0 5px 0 rgba(0,0,0,.22);
+  text-align:center;user-select:none;
+  -webkit-tap-highlight-color:transparent;
+  min-height:4.5rem;
+  display:flex;align-items:center;justify-content:center;
+  gap:0.5rem;position:relative;
+}
+.answer-btn:active:not(.locked){transform:scale(.96);}
+.answer-btn.locked{pointer-events:none;opacity:.35;filter:grayscale(.3);}
+.answer-btn.selected{
+  transform:scale(1.04);opacity:1!important;filter:none!important;
+  box-shadow:0 0 0 5px #fff,0 5px 0 rgba(0,0,0,.22);
+}
+
+.answer-btn.glow{
+  animation:glowPulse .7s ease-in-out infinite alternate;
+  z-index:10;transform:scale(1.04);
+}
+@keyframes glowPulse{
+  0%{
+    box-shadow:0 0 12px rgba(255,255,255,0.6),0 0 24px rgba(255,255,255,0.3),0 5px 0 rgba(0,0,0,.22);
+    filter:brightness(1.15);
+  }
+  100%{
+    box-shadow:0 0 24px rgba(255,255,255,1),0 0 48px rgba(255,255,255,0.5),0 0 72px rgba(255,255,255,0.2),0 5px 0 rgba(0,0,0,.22);
+    filter:brightness(1.35);
+  }
+}
+
+.clr-red{background:#e74c3c;}
+.clr-yellow{background:#f1c40f; color:#222;}
+.clr-blue{background:#3498db;}
+.clr-green{background:#2ecc71;}
+.btn-emoji{font-size:2.4rem;line-height:1;}
+
+/* ── Result screen ── */
+#result-screen{display:none;width:100%;max-width:700px;text-align:center;}
+.result-card{
+  background:#fff;color:#333;border-radius:16px;
+  padding:2rem 1.4rem;
+  box-shadow:0 8px 32px rgba(0,0,0,.3);
+  margin-bottom:1.5rem;
+}
+.result-msg{font-size:1.6rem;line-height:1.9;margin-bottom:1.8rem;text-align:center;}
+.result-scores{font-size:3.5rem;font-weight:bold;color:#1e3d59;}
+.result-scores span{display:block;margin:.5rem 0; font-size:2.5rem;}
+.result-credit{font-size:1rem;color:#aaa;margin-top:1.4rem;}
+#restart-btn{
+  padding:1.2rem 3rem;background:#17b978;color:#fff;
+  border:none;border-radius:30px;font-size:1.8rem;font-weight:bold;
+  cursor:pointer;box-shadow:0 4px 0 rgba(0,0,0,.15);
+  transition:background .2s;
+  -webkit-tap-highlight-color:transparent;
+}
+#restart-btn:hover{background:#129661;}
+
+@media(min-width:600px){
+  #question-text{font-size:2.2rem;}
+  .answer-btn{font-size:2.2rem;padding:1.8rem 1.2rem;}
+  .btn-emoji{font-size:2.8rem;}
+  .result-msg{font-size:1.8rem;}
+  .explain-text{font-size:1.6rem;}
+}
+</style>
+</head>
+<body>
+
+<div id="speech-overlay">
+  <div class="tap-icon">🔊</div>
+  <div class="tap-text">點按以啟用語音</div>
+  <div class="tap-sub">Tap to enable voice</div>
+</div>
+
+<div id="no-speech-banner">此瀏覽器不支援語音朗讀</div>
+
+<div id="app">
+  <div class="header-title">新症約期問卷</div>
+  <div class="header-sub">雅麗氏何妙齡那打素醫院 物理治療部</div>
+
+  <div id="intro-screen">
+    <div class="intro-card">
+      <div class="intro-title">病人須知：</div>
+      <div class="intro-text">此問卷用作新症分流及安排物理治療。請根據轉介信上的病情，回答以下 11 條問題。</div>
+      <div class="intro-title" style="margin-top:15px; font-size:1.3rem;">說明：</div>
+      <ul class="intro-list">
+        <li>請仔細聆聽每條問題及口語解釋，並選擇最合適的答案。</li>
+        <li>完成後，請將手機/平板電腦交回接待處。</li>
+      </ul>
+    </div>
+    <button id="start-btn">開始做問卷</button>
+  </div>
+
+  <div id="quiz-area">
+    <div id="progress-area">
+      <div id="progress-text"></div>
+      <div id="progress-bar-bg"><div id="progress-bar-fill"></div></div>
+    </div>
+    <div id="question-card">
+      <div id="question-number"></div>
+      <div id="question-text"></div>
+      <div class="btn-row">
+        <button class="card-btn" id="prev-btn">⬅️ 返回上一題</button>
+        <button class="card-btn" id="replay-btn">🔊 重播</button>
+        <button class="card-btn" id="explain-btn">💡 解釋</button>
+      </div>
+      <div id="explanation-panel">
+        <div class="explain-text" id="explain-text"></div>
+        <button class="explain-listen-btn" id="explain-listen-btn">🔊 再聽一次解釋</button>
+      </div>
+    </div>
+    <div id="answers-area"></div>
+  </div>
+
+  <div id="result-screen">
+    <div class="result-card">
+      <div class="result-msg" id="result-msg"></div>
+      <div class="result-scores" id="result-scores"></div>
+      <div class="result-credit">雅麗氏何妙齡那打素醫院 物理治療部</div>
+    </div>
+    <button id="restart-btn">🔄 重新開始</button>
+  </div>
+</div>
+
+<script>
+(function(){
+  'use strict';
+
+  /* ═══════════════════ DATA (Triage 11 Questions) ═══════════════════ */
+  var questions = [
+    {
+      id: 1,
+      text: '1. 我選擇物理治療的時間',
+      explanation: '即係你想揀咩時間做物理治療？',
+      options: [
+        { label: '任何時間', emoji: '🕒', color: 'clr-blue' },
+        { label: '上午', emoji: '🌅', color: 'clr-blue' },
+        { label: '下午', emoji: '🌇', color: 'clr-blue' }
+      ]
+    },
+    {
+      id: 2,
+      text: '2. 請問你體內有沒有植入受磁波影響儀器或任何電子儀器？例如：心臟起搏器 / 深層腦部刺激器 / 人工耳窩等 / 腦室腹腔分流器？',
+      explanation: '即係你身體入面有冇裝過電子儀器，例如心臟起搏器？',
+      options: [
+        { label: '有', emoji: '⚠️', color: 'clr-red' },
+        { label: '沒有', emoji: '❌', color: 'clr-green' }
+      ]
+    },
+    {
+      id: 3,
+      text: '3. 你有否因轉介書內的病情而曾接受公立醫院物理治療（6個月內）？',
+      explanation: '即係最近半年，你有冇因為今次嘅病去過政府醫院做物理治療？',
+      options: [
+        { label: '有', emoji: '✔️', color: 'clr-yellow' },
+        { label: '沒有', emoji: '❌', color: 'clr-blue' }
+      ]
+    },
+    {
+      id: 4,
+      text: '4. 最近 3 個月內你是否因轉介書內的病情而需住院接受治療？',
+      explanation: '即係最近三個月，你有冇因為今次嘅病住過醫院？',
+      options: [
+        { label: '有', emoji: '🏥', color: 'clr-yellow' },
+        { label: '沒有', emoji: '❌', color: 'clr-blue' }
+      ]
+    },
+    {
+      id: 5,
+      text: '5. 這次治療轉介書內的病情是否屬於工傷（3個月內）？',
+      explanation: '即係今次睇嘅病，係咪最近三個月內發生嘅工傷？',
+      options: [
+        { label: '有', emoji: '👷', color: 'clr-yellow' },
+        { label: '沒有', emoji: '❌', color: 'clr-blue' }
+      ]
+    },
+    {
+      id: 6,
+      text: '6. 現在是否因這個轉介書內的病情而放病假？',
+      explanation: '即係你而家有冇因為今次嘅病而放緊病假？',
+      options: [
+        { label: '有', emoji: '🛌', color: 'clr-yellow' },
+        { label: '沒有', emoji: '❌', color: 'clr-blue' }
+      ]
+    },
+    {
+      id: 7,
+      text: '7. 你的病情是否因嚴重意外受傷引起（3個月內）？（例如：骨折、交通意外、高處墮下等等）',
+      explanation: '即係今次嘅病，係咪最近三個月內因為嚴重意外而受傷，例如骨折或者車禍？',
+      options: [
+        { label: '有', emoji: '💥', color: 'clr-red' },
+        { label: '沒有', emoji: '❌', color: 'clr-green' }
+      ]
+    },
+    {
+      id: 8,
+      text: '8. 這個轉介書內的病情持續了多久？',
+      explanation: '即係今次轉介信上面寫嘅病痛，已經持續咗幾耐？',
+      options: [
+        { label: '多過 3 個月', emoji: '📅', color: 'clr-red' },
+        { label: '多過 6 個星期', emoji: '📆', color: 'clr-yellow' },
+        { label: '少過 6 個星期', emoji: '🗓️', color: 'clr-green' }
+      ]
+    },
+    {
+      id: 9,
+      text: '9. 整體來說，你的病情在最近四星期內之進展情況是：',
+      explanation: '即係最近呢四個星期，你嘅病情係好咗、無變、定係差咗？',
+      options: [
+        { label: '好轉', emoji: '👍', color: 'clr-green' },
+        { label: '沒有改變', emoji: '😐', color: 'clr-yellow' },
+        { label: '惡化', emoji: '👎', color: 'clr-red' }
+      ]
+    },
+    {
+      id: 10,
+      text: '10. 這個轉介書內的病情/問題，對你應付工作/學業/家務等的能力有多大影響？',
+      explanation: '即係今次嘅病，有幾大程度影響到你平時返工、返學或者做家務？',
+      options: [
+        { label: '沒有影響', emoji: '😄', color: 'clr-green' },
+        { label: '輕度影響', emoji: '🙂', color: 'clr-blue' },
+        { label: '頗大影響，仍可勉強', emoji: '😓', color: 'clr-yellow' },
+        { label: '不能完成所需要求', emoji: '❌', color: 'clr-red' }
+      ]
+    },
+    {
+      id: 11,
+      text: '11. 根據你今天的情況，你的痛楚/麻痺/僵硬/乏力等病徵的嚴重程度是：',
+      explanation: '即係今日覺得痛、痺或者冇力嘅情況，有幾嚴重？',
+      options: [
+        { label: '沒有問題', emoji: '😄', color: 'clr-green' },
+        { label: '輕微 / 一般', emoji: '🙂', color: 'clr-blue' },
+        { label: '嚴重', emoji: '😣', color: 'clr-yellow' },
+        { label: '極嚴重', emoji: '😭', color: 'clr-red' }
+      ]
+    }
+  ];
+
+  var totalQuestions = 11;
+
+  /* ═══════════════════ STATE ═══════════════════ */
+  var currentIndex   = 0;
+  var answers        = [];
+  var locked         = false;
+  var speechEnabled  = false;
+  var speechOK       = ('speechSynthesis' in window);
+  var repeatTimer    = null;
+  var speechSeqId    = 0;
+  var explanationOpen= false;
+
+  var expLoopId      = 0;
+  var expLoopTimer   = null;
+
+  /* ═══════════════════ DOM REFS ═══════════════════ */
+  var elOverlay      = document.getElementById('speech-overlay');
+  var elBanner       = document.getElementById('no-speech-banner');
+  var elIntro        = document.getElementById('intro-screen');
+  var elStartBtn     = document.getElementById('start-btn');
+  var elProgressTxt  = document.getElementById('progress-text');
+  var elProgressBar  = document.getElementById('progress-bar-fill');
+  var elQNum         = document.getElementById('question-number');
+  var elQText        = document.getElementById('question-text');
+  var elPrevBtn      = document.getElementById('prev-btn');
+  var elReplay       = document.getElementById('replay-btn');
+  var elExplainBtn   = document.getElementById('explain-btn');
+  var elExplainPanel = document.getElementById('explanation-panel');
+  var elExplainText  = document.getElementById('explain-text');
+  var elExplainListen= document.getElementById('explain-listen-btn');
+  var elAnswers      = document.getElementById('answers-area');
+  var elQuiz         = document.getElementById('quiz-area');
+  var elResult       = document.getElementById('result-screen');
+  var elResultMsg    = document.getElementById('result-msg');
+  var elResultScore  = document.getElementById('result-scores');
+  var elRestart      = document.getElementById('restart-btn');
+
+  /* ═══════════════════════════════════════════════════
+     ENHANCED CANTONESE VOICE SELECTION
+     ═══════════════════════════════════════════════════ */
+  function applyVoice(utter){
+    var voices = window.speechSynthesis.getVoices();
+    var cantoneseVoice = null;
+
+    for(var i = 0; i < voices.length; i++){
+      var v = voices[i];
+      var lang = (v.lang || '').toLowerCase();
+      var name = (v.name || '').toLowerCase();
+
+      if(lang === 'zh-hk' || lang.indexOf('yue') !== -1 || name.indexOf('cantonese') !== -1 || name.indexOf('粵語') !== -1){
+        cantoneseVoice = v;
+        break;
+      }
+    }
+
+    if(!cantoneseVoice){
+      for(var i = 0; i < voices.length; i++){
+        var v = voices[i];
+        var lang = (v.lang || '').toLowerCase();
+        var name = (v.name || '').toLowerCase();
+        
+        if(lang.indexOf('zh-cn') !== -1 || name.indexOf('mandarin') !== -1 || name.indexOf('普通话') !== -1 || name.indexOf('國語') !== -1){
+          continue;
+        }
+
+        if(lang.indexOf('zh') === 0){
+          cantoneseVoice = v;
+          break;
+        }
+      }
+    }
+
+    if(cantoneseVoice){
+      utter.voice = cantoneseVoice;
+      utter.lang = cantoneseVoice.lang;
+    } else {
+      utter.lang = 'zh-HK';
+    }
+    utter.rate = 0.8;
+  }
+
+  /* ═══════════════════ HELPERS ═══════════════════ */
+  function clearAllGlow(){
+    var btns = elAnswers.querySelectorAll('.answer-btn');
+    for(var i = 0; i < btns.length; i++) btns[i].classList.remove('glow');
+  }
+
+  function startRepeatTimer(){
+    stopRepeatTimer();
+    repeatTimer = setTimeout(function(){
+      if(!locked && !explanationOpen && elQuiz.style.display !== 'none'){
+        speakSequence();
+      }
+    }, 10000);
+  }
+
+  function stopRepeatTimer(){
+    if(repeatTimer !== null){ clearTimeout(repeatTimer); repeatTimer = null; }
+  }
+
+  /* ═══════════════════ EXPLANATION LOOP ═══════════════════ */
+  function stopExpLoop(){
+    expLoopId++;
+    if(expLoopTimer !== null){ clearTimeout(expLoopTimer); expLoopTimer = null; }
+  }
+
+  function expLoopSpeak(text, myId, cb){
+    if(myId !== expLoopId) return;
+    if(!speechOK || !speechEnabled){ if(cb) cb(); return; }
+    var utter = new SpeechSynthesisUtterance(text);
+    applyVoice(utter);
+    utter.onend   = function(){ if(myId === expLoopId && cb) cb(); };
+    utter.onerror = function(){ if(myId === expLoopId && cb) cb(); };
+    window.speechSynthesis.speak(utter);
+  }
+
+  function startExpLoop(explanationText){
+    stopExpLoop();
+    stopRepeatTimer();
+    if(speechOK) window.speechSynthesis.cancel();
+    clearAllGlow();
+    speechSeqId++;
+
+    var myId = expLoopId;
+    var qText = questions[currentIndex].text;
+
+    expLoopSpeak(explanationText, myId, function(){
+      if(myId !== expLoopId) return;
+      expLoopTimer = setTimeout(function(){
+        if(myId !== expLoopId) return;
+        expLoopRepeatCycle(myId, qText, explanationText);
+      }, 10000);
+    });
+  }
+
+  function expLoopRepeatCycle(myId, qText, eText){
+    if(myId !== expLoopId) return;
+    expLoopSpeak(qText, myId, function(){
+      if(myId !== expLoopId) return;
+      expLoopSpeak(eText, myId, function(){
+        if(myId !== expLoopId) return;
+        expLoopTimer = setTimeout(function(){
+          if(myId !== expLoopId) return;
+          expLoopRepeatCycle(myId, qText, eText);
+        }, 10000);
+      });
+    });
+  }
+
+  /* ═══════════════════ SPEECH: SEQUENCE ═══════════════════ */
+  function speakSequence(){
+    if(!speechOK || !speechEnabled) return;
+    window.speechSynthesis.cancel();
+    clearAllGlow();
+    stopRepeatTimer();
+
+    speechSeqId++;
+    var mySeqId = speechSeqId;
+    var q = questions[currentIndex];
+    var items = [];
+
+    items.push({ text: q.text, buttonIndex: -1 });
+
+    var btns = elAnswers.querySelectorAll('.answer-btn');
+    for(var i = 0; i < btns.length; i++){
+      items.push({ text: btns[i].getAttribute('data-speech'), buttonIndex: i });
+    }
+
+    var idx = 0;
+    function speakNext(){
+      if(mySeqId !== speechSeqId) return;
+      if(idx >= items.length || locked){
+        clearAllGlow();
+        if(mySeqId === speechSeqId) startRepeatTimer();
+        return;
+      }
+
+      var item = items[idx];
+      var utter = new SpeechSynthesisUtterance(item.text);
+      applyVoice(utter);
+
+      utter.onstart = function(){
+        if(mySeqId !== speechSeqId) return;
+        clearAllGlow();
+        if(item.buttonIndex >= 0){
+          var allBtns = elAnswers.querySelectorAll('.answer-btn');
+          if(allBtns[item.buttonIndex]) allBtns[item.buttonIndex].classList.add('glow');
+        }
+      };
+      utter.onend = function(){
+        if(mySeqId !== speechSeqId) return;
+        clearAllGlow();
+        idx++;
+        setTimeout(speakNext, 400);
+      };
+      utter.onerror = function(){
+        if(mySeqId !== speechSeqId) return;
+        clearAllGlow();
+        idx++;
+        setTimeout(speakNext, 400);
+      };
+
+      window.speechSynthesis.speak(utter);
+    }
+    speakNext();
+  }
+
+  /* ═══════════════════ EXPLANATION (QUESTION) ═══════════════════ */
+  function openExplanation(){
+    explanationOpen = true;
+    elExplainPanel.style.display = 'block';
+    elExplainBtn.classList.add('active');
+    var q = questions[currentIndex];
+    startExpLoop(q.explanation);
+  }
+
+  function closeExplanation(){
+    explanationOpen = false;
+    elExplainPanel.style.display = 'none';
+    elExplainBtn.classList.remove('active');
+  }
+
+  function toggleExplanation(){
+    if(explanationOpen){
+      closeExplanation();
+      stopExpLoop();
+      if(speechOK) window.speechSynthesis.cancel();
+      speechSeqId++;
+      startRepeatTimer();
+    } else {
+      openExplanation();
+    }
+  }
+
+  /* ═══════════════════ RENDER ═══════════════════ */
+  function renderQuestion(){
+    locked = false;
+    explanationOpen = false;
+    stopExpLoop();
+    var q = questions[currentIndex];
+
+    elProgressTxt.textContent = '第 ' + (currentIndex + 1) + ' / ' + totalQuestions + ' 題';
+    elProgressBar.style.width = ((currentIndex + 1) / totalQuestions * 100) + '%';
+    elQNum.textContent = '問題 ' + (currentIndex + 1);
+    elQText.textContent = q.text;
+
+    if(currentIndex > 0){
+      elPrevBtn.style.display = 'inline-flex';
+    } else {
+      elPrevBtn.style.display = 'none';
+    }
+
+    elExplainPanel.style.display = 'none';
+    elExplainBtn.classList.remove('active');
+    elExplainText.textContent = '（' + q.explanation + '）';
+
+    elAnswers.innerHTML = '';
+
+    var prevVal = answers[currentIndex];
+    
+    // Dynamically render options based on question config
+    q.options.forEach(function(opt, index) {
+      addButton(opt.emoji, opt.label, index, opt.color, prevVal === index);
+    });
+
+    window.scrollTo(0, 0);
+    speakSequence();
+  }
+
+  function addButton(emoji, label, value, colorClass, isSelected){
+    var btn = document.createElement('button');
+    btn.className = 'answer-btn ' + colorClass;
+    if(isSelected){
+      btn.classList.add('selected');
+    }
+    if(emoji){
+      var es = document.createElement('span');
+      es.className = 'btn-emoji';
+      es.textContent = emoji;
+      btn.appendChild(es);
+    }
+    var ts = document.createElement('span');
+    ts.textContent = label;
+    btn.appendChild(ts);
+    btn.setAttribute('data-speech', label);
+    btn.addEventListener('click', function(){ onAnswer(btn, value); });
+    elAnswers.appendChild(btn);
+  }
+
+  /* ═══════════════════ ANSWER ═══════════════════ */
+  function onAnswer(btn, value){
+    if(locked) return;
+    locked = true;
+
+    stopRepeatTimer();
+    stopExpLoop();
+    speechSeqId++;
+    if(speechOK) window.speechSynthesis.cancel();
+    clearAllGlow();
+    closeExplanation();
+
+    var all = elAnswers.querySelectorAll('.answer-btn');
+    for(var i = 0; i < all.length; i++) all[i].classList.add('locked');
+    btn.classList.remove('locked');
+    btn.classList.add('selected');
+
+    answers[currentIndex] = value;
+
+    setTimeout(function(){
+      currentIndex++;
+      if(currentIndex < questions.length) renderQuestion();
+      else showResult();
+    }, 350);
+  }
+
+  /* ═══════════════════ PREVIOUS QUESTION ═══════════════════ */
+  function prevQuestion(){
+    if(currentIndex <= 0) return;
+    stopRepeatTimer();
+    stopExpLoop();
+    speechSeqId++;
+    if(speechOK) window.speechSynthesis.cancel();
+    clearAllGlow();
+    closeExplanation();
+
+    currentIndex--;
+    renderQuestion();
+  }
+
+  /* ═══════════════════ RESULT ═══════════════════ */
+  function showResult(){
+    stopRepeatTimer();
+    stopExpLoop();
+    speechSeqId++;
+    if(speechOK) window.speechSynthesis.cancel();
+    clearAllGlow();
+
+    elQuiz.style.display = 'none';
+    elResult.style.display = 'block';
+
+    elResultMsg.innerHTML =
+      '非常感謝您完成了這份分流問卷。<br><br>' +
+      '<strong>請勿關閉此頁面，並將手機/平板電腦交回物理治療部接待處，謝謝！</strong>';
+
+    elResultScore.innerHTML = '<span>✅ 問卷已完成</span>';
+
+    window.scrollTo(0, 0);
+
+    // Speak ending message
+    if(!speechOK || !speechEnabled) return;
+    var utter = new SpeechSynthesisUtterance('非常感謝您完成了這份分流問卷。請勿關閉此頁面，並將設備交回物理治療部接待處，謝謝！');
+    applyVoice(utter);
+    window.speechSynthesis.speak(utter);
+  }
+
+  /* ═══════════════════ INIT ═══════════════════ */
+  function init(){
+    if(!speechOK){
+      elOverlay.style.display = 'none';
+      elBanner.style.display = 'block';
+      elIntro.style.display = 'flex';
+    } else {
+      window.speechSynthesis.getVoices();
+      if(typeof window.speechSynthesis.onvoiceschanged !== 'undefined'){
+        window.speechSynthesis.onvoiceschanged = function(){
+          window.speechSynthesis.getVoices();
+        };
+      }
+      elOverlay.addEventListener('click', onOverlayTap);
+    }
+
+    elStartBtn.addEventListener('click', function(){
+      if(speechOK && speechEnabled){
+        window.speechSynthesis.cancel();
+      }
+      elIntro.style.display = 'none';
+      startQuiz();
+    });
+
+    elPrevBtn.addEventListener('click', prevQuestion);
+    elReplay.addEventListener('click', function(){
+      closeExplanation();
+      stopExpLoop();
+      stopRepeatTimer();
+      speakSequence();
+    });
+    elExplainBtn.addEventListener('click', function(){
+      toggleExplanation();
+    });
+    elExplainListen.addEventListener('click', function(){
+      var q = questions[currentIndex];
+      startExpLoop(q.explanation);
+    });
+    elRestart.addEventListener('click', function(){
+      stopRepeatTimer();
+      stopExpLoop();
+      speechSeqId++;
+      if(speechOK) window.speechSynthesis.cancel();
+      clearAllGlow();
+      elResult.style.display = 'none';
+      elIntro.style.display = 'flex';
+      window.scrollTo(0,0);
+    });
+  }
+
+  function onOverlayTap(){
+    speechEnabled = true;
+    elOverlay.style.display = 'none';
+    var dummy = new SpeechSynthesisUtterance('');
+    dummy.lang = 'zh-HK';
+    dummy.volume = 0;
+    window.speechSynthesis.speak(dummy);
+    elIntro.style.display = 'flex';
+  }
+
+  function startQuiz(){
+    currentIndex = 0;
+    answers = [];
+    elResult.style.display = 'none';
+    elQuiz.style.display = 'flex';
+    renderQuestion();
+  }
+
+  init();
+})();
+</script>
+</body>
+</html>
+"""
+
+with open("triage_questionnaire.html", "w", encoding="utf-8") as f:
+    f.write(html_code)
+
+print("[file-tag: triage_questionnaire.html]")
