@@ -101,7 +101,12 @@ html,body{
   margin-bottom:1.2rem;
 }
 #question-number{font-size:1.2rem;color:#999;margin-bottom:.35rem;font-weight:bold;}
-#question-text{font-size:1.8rem;font-weight:bold;line-height:1.5;}
+#question-text{
+  font-size:1.8rem;
+  font-weight:bold;
+  line-height:1.5;
+  white-space: pre-wrap; /* 允許文字中嘅換行符號(\n)生效 */
+}
 
 /* ── Button row ── */
 .btn-row{
@@ -115,30 +120,8 @@ html,body{
   -webkit-tap-highlight-color:transparent;
 }
 .card-btn:hover{background:#ddd;}
-.card-btn.active{background:#ffeaa7;color:#856404;}
 #prev-btn{display:none;background:#dfe6e9;color:#2d3436;}
 #prev-btn:hover{background:#b2bec3;}
-
-/* ── Explanation panel (question level) ── */
-#explanation-panel{
-  display:none;
-  background:#fff9e6;border:2px solid #f0d060;border-radius:12px;
-  padding:1.2rem 1rem;margin-top:1rem;text-align:left;
-  animation:fadeSlideDown .3s ease;
-}
-@keyframes fadeSlideDown{
-  from{opacity:0;transform:translateY(-10px);}
-  to{opacity:1;transform:translateY(0);}
-}
-.explain-text{font-size:1.4rem;line-height:1.6;color:#333;}
-.explain-listen-btn{
-  display:inline-flex;align-items:center;gap:.3rem;
-  margin-top:.8rem;padding:.4rem 1.2rem;
-  background:#f0d060;color:#6b5900;border:none;border-radius:20px;
-  font-size:1.1rem;cursor:pointer;transition:background .2s;
-  -webkit-tap-highlight-color:transparent;
-}
-.explain-listen-btn:hover{background:#e6c340;}
 
 /* ── Answers area ── */
 #answers-area{
@@ -215,7 +198,6 @@ html,body{
   .answer-btn{font-size:2rem;padding:1.8rem 1.2rem;}
   .btn-emoji{font-size:2.8rem;}
   .result-msg{font-size:1.8rem;}
-  .explain-text{font-size:1.6rem;}
 }
 </style>
 </head>
@@ -258,11 +240,6 @@ html,body{
       <div class="btn-row">
         <button class="card-btn" id="prev-btn">⬅️ 返回上一題</button>
         <button class="card-btn" id="replay-btn">🔊 重播</button>
-        <button class="card-btn" id="explain-btn">💡 聽解釋</button>
-      </div>
-      <div id="explanation-panel">
-        <div class="explain-text" id="explain-text"></div>
-        <button class="explain-listen-btn" id="explain-listen-btn">🔊 再聽一次</button>
       </div>
     </div>
     <div id="answers-area"></div>
@@ -293,49 +270,56 @@ html,body{
       ]
     },
     {
-      id: 2, text: '2. 請問你體內有沒有植入受磁波影響儀器或任何電子儀器？', explanation: '請問你身體入面有冇裝到一啲會受磁場影響嘅電子儀器，例如心臟起搏器？',
+      id: 2, text: '2. 請問你體內有沒有植入受磁波影響儀器或任何電子儀器？\n(例如：心臟起搏器 / 深層腦部刺激器 / 人工耳窩等 / 腦室腹腔分流器)', 
+      explanation: '請問你身體入面有冇裝到一啲會受磁場影響嘅電子儀器，例如：心臟起搏器、深層腦部刺激器、人工耳窩、或者腦室腹腔分流器？',
       options: [
         { label: '有', emoji: '✔️', val: '有', color: 'clr-red' },
         { label: '沒有', emoji: '❌', val: '沒有', color: 'clr-blue' }
       ]
     },
     {
-      id: 3, text: '3. 你有否因轉介書內的病情而曾接受公立醫院物理治療 (6個月內)？', explanation: '過去六個月內，你有冇因為今次轉介信上面嘅同一個病，去過政府醫院睇物理治療？',
+      id: 3, text: '3. 你有否因轉介書內的病情而曾接受公立醫院物理治療 (6個月內)？', 
+      explanation: '過去六個月內，你有冇因為今次轉介信上面嘅同一個病，去過政府醫院睇物理治療？',
       options: [
         { label: '有', emoji: '✔️', val: 1, color: 'clr-red' },
         { label: '沒有', emoji: '❌', val: 0, color: 'clr-blue' }
       ]
     },
     {
-      id: 4, text: '4. 最近3個月內你是否因轉介書內的病情而需住院接受治療？', explanation: '過去三個月內，你有冇因為今次轉介信上面嘅病，而需要入院留醫？',
+      id: 4, text: '4. 最近3個月內你是否因轉介書內的病情而需住院接受治療？', 
+      explanation: '過去三個月內，你有冇因為今次轉介信上面嘅病，而需要入院留醫？',
       options: [
         { label: '有', emoji: '✔️', val: 1, color: 'clr-red' },
         { label: '沒有', emoji: '❌', val: 0, color: 'clr-blue' }
       ]
     },
     {
-      id: 5, text: '5. 這次治療轉介書內的病情是否屬於工傷 (3個月內)？', explanation: '今次轉介信上面講嘅病，係咪屬於三個月之內發生嘅工傷？',
+      id: 5, text: '5. 這次治療轉介書內的病情是否屬於工傷 (3個月內)？', 
+      explanation: '今次轉介信上面講嘅病，係咪屬於三個月之內發生嘅工傷？',
       options: [
         { label: '是', emoji: '✔️', val: 1, color: 'clr-red' },
         { label: '否', emoji: '❌', val: 0, color: 'clr-blue' }
       ]
     },
     {
-      id: 6, text: '6. 現在是否因這個轉介書內的病情而放病假？', explanation: '你依家係咪因為今次呢個病而放緊病假？',
+      id: 6, text: '6. 現在是否因這個轉介書內的病情而放病假？', 
+      explanation: '你依家係咪因為今次呢個病而放緊病假？',
       options: [
         { label: '有', emoji: '✔️', val: 1, color: 'clr-red' },
         { label: '沒有', emoji: '❌', val: 0, color: 'clr-blue' }
       ]
     },
     {
-      id: 7, text: '7. 你的病情是否因嚴重意外受傷引起 (3個月內)？', explanation: '你今次嘅病，係咪因為三個月內發生嘅嚴重意外引起？例如骨折或者交通意外。',
+      id: 7, text: '7. 你的病情是否因嚴重意外受傷引起 (3個月內)？\n(例如：骨折、交通意外、高處墮下等等)', 
+      explanation: '你今次嘅病，係咪因為三個月內發生嘅嚴重意外引起？例如：骨折、交通意外、或者由高處跌落嚟？',
       options: [
         { label: '有', emoji: '✔️', val: 1, color: 'clr-red' },
         { label: '沒有', emoji: '❌', val: 0, color: 'clr-blue' }
       ]
     },
     {
-      id: 8, text: '8. 這個轉介書內的病情持續了多久？', explanation: '轉介信上面講嘅呢個病，已經痛咗或者維持咗幾耐？',
+      id: 8, text: '8. 這個轉介書內的病情持續了多久？', 
+      explanation: '轉介信上面講嘅呢個病，已經痛咗或者維持咗幾耐？',
       options: [
         { label: '多過3個月', emoji: '🕒', val: 1, color: 'clr-blue' },
         { label: '多過6個星期', emoji: '🕓', val: 2, color: 'clr-yellow' },
@@ -343,7 +327,8 @@ html,body{
       ]
     },
     {
-      id: 9, text: '9. 整體來說，你的病情在最近四星期內之進展情況是：', explanation: '整體嚟講，你覺得最近呢四個星期，你嘅病情係好轉咗，無變，定係差咗？',
+      id: 9, text: '9. 整體來說，你的病情在最近四星期內之進展情況是：', 
+      explanation: '整體嚟講，你覺得最近呢四個星期，你嘅病情係好轉咗，無變，定係差咗？',
       options: [
         { label: '好轉', emoji: '📈', val: 1, color: 'clr-blue' },
         { label: '沒有改變', emoji: '➖', val: 2, color: 'clr-yellow' },
@@ -351,7 +336,8 @@ html,body{
       ]
     },
     {
-      id: 10, text: '10. 這個轉介書內的病情/問題，對你應付工作/學業/家務等的能力有多大影響？', explanation: '今次呢個病，對你平時返工、返學或者做家務嘅能力，影響有幾大？',
+      id: 10, text: '10. 這個轉介書內的病情/問題，對你應付工作/學業/家務等的能力有多大影響？', 
+      explanation: '今次呢個病，對你平時返工、返學或者做家務嘅能力，影響有幾大？',
       options: [
         { label: '沒有影響', emoji: '🟢', val: 1, color: 'clr-blue' },
         { label: '輕度影響', emoji: '🟡', val: 2, color: 'clr-green' },
@@ -360,7 +346,8 @@ html,body{
       ]
     },
     {
-      id: 11, text: '11. 根據你今天的情況，你的痛楚/麻痺/僵硬/乏力等病徵的嚴重程度是：', explanation: '根據你今日嘅感覺，你覺得痛楚或者麻痺嘅嚴重程度係點？',
+      id: 11, text: '11. 根據你今天的情況，你的痛楚/麻痺/僵硬/乏力等病徵的嚴重程度是：\n(例如：經常影響至不能入睡)', 
+      explanation: '根據你今日嘅感覺，你覺得痛楚、麻痺、僵硬或者冇力嘅嚴重程度係點？極嚴重即係例如經常影響到瞓唔著。',
       options: [
         { label: '沒有問題', emoji: '🟢', val: 1, color: 'clr-blue' },
         { label: '輕微 / 一般', emoji: '🟡', val: 2, color: 'clr-green' },
@@ -380,9 +367,6 @@ html,body{
   var speechOK       = ('speechSynthesis' in window);
   var repeatTimer    = null;
   var speechSeqId    = 0;
-  var explanationOpen= false;
-  var expLoopId      = 0;
-  var expLoopTimer   = null;
 
   /* ═══════════════════ DOM REFS ═══════════════════ */
   var elOverlay      = document.getElementById('speech-overlay');
@@ -395,10 +379,6 @@ html,body{
   var elQText        = document.getElementById('question-text');
   var elPrevBtn      = document.getElementById('prev-btn');
   var elReplay       = document.getElementById('replay-btn');
-  var elExplainBtn   = document.getElementById('explain-btn');
-  var elExplainPanel = document.getElementById('explanation-panel');
-  var elExplainText  = document.getElementById('explain-text');
-  var elExplainListen= document.getElementById('explain-listen-btn');
   var elAnswers      = document.getElementById('answers-area');
   var elQuiz         = document.getElementById('quiz-area');
   var elResult       = document.getElementById('result-screen');
@@ -443,56 +423,12 @@ html,body{
   function startRepeatTimer(){
     stopRepeatTimer();
     repeatTimer = setTimeout(function(){
-      if(!locked && !explanationOpen && elQuiz.style.display !== 'none'){ speakSequence(); }
+      if(!locked && elQuiz.style.display !== 'none'){ speakSequence(); }
     }, 10000);
   }
 
   function stopRepeatTimer(){
     if(repeatTimer !== null){ clearTimeout(repeatTimer); repeatTimer = null; }
-  }
-
-  /* ═══════════════════ EXPLANATION LOOP ═══════════════════ */
-  function stopExpLoop(){
-    expLoopId++;
-    if(expLoopTimer !== null){ clearTimeout(expLoopTimer); expLoopTimer = null; }
-  }
-
-  function expLoopSpeak(text, myId, cb){
-    if(myId !== expLoopId) return;
-    if(!speechOK || !speechEnabled){ if(cb) cb(); return; }
-    var utter = new SpeechSynthesisUtterance(text);
-    applyVoice(utter);
-    utter.onend = function(){ if(myId === expLoopId && cb) cb(); };
-    utter.onerror = function(){ if(myId === expLoopId && cb) cb(); };
-    window.speechSynthesis.speak(utter);
-  }
-
-  function startExpLoop(explanationText){
-    stopExpLoop();
-    stopRepeatTimer();
-    if(speechOK) window.speechSynthesis.cancel();
-    clearAllGlow();
-    speechSeqId++;
-
-    var myId = expLoopId;
-    expLoopSpeak(explanationText, myId, function(){
-      if(myId !== expLoopId) return;
-      expLoopTimer = setTimeout(function(){
-        if(myId !== expLoopId) return;
-        expLoopRepeatCycle(myId, explanationText);
-      }, 10000);
-    });
-  }
-
-  function expLoopRepeatCycle(myId, eText){
-    if(myId !== expLoopId) return;
-    expLoopSpeak(eText, myId, function(){
-      if(myId !== expLoopId) return;
-      expLoopTimer = setTimeout(function(){
-        if(myId !== expLoopId) return;
-        expLoopRepeatCycle(myId, eText);
-      }, 10000);
-    });
   }
 
   /* ═══════════════════ SPEECH: SEQUENCE ═══════════════════ */
@@ -586,37 +522,10 @@ html,body{
     speakNext();
   }
 
-  /* ═══════════════════ EXPLANATION (QUESTION) ═══════════════════ */
-  function openExplanation(){
-    explanationOpen = true;
-    elExplainPanel.style.display = 'block';
-    elExplainBtn.classList.add('active');
-    startExpLoop(questions[currentIndex].explanation);
-  }
-
-  function closeExplanation(){
-    explanationOpen = false;
-    elExplainPanel.style.display = 'none';
-    elExplainBtn.classList.remove('active');
-  }
-
-  function toggleExplanation(){
-    if(explanationOpen){
-      closeExplanation();
-      stopExpLoop();
-      if(speechOK) window.speechSynthesis.cancel();
-      speechSeqId++;
-      startRepeatTimer();
-    } else {
-      openExplanation();
-    }
-  }
 
   /* ═══════════════════ RENDER ═══════════════════ */
   function renderQuestion(){
     locked = false;
-    explanationOpen = false;
-    stopExpLoop();
     var q = questions[currentIndex];
 
     elProgressTxt.textContent = '第 ' + (currentIndex + 1) + ' / ' + totalQuestions + ' 題';
@@ -626,10 +535,6 @@ html,body{
 
     if(currentIndex > 0) elPrevBtn.style.display = 'inline-flex';
     else elPrevBtn.style.display = 'none';
-
-    elExplainPanel.style.display = 'none';
-    elExplainBtn.classList.remove('active');
-    elExplainText.textContent = '（口語：' + q.explanation + '）';
 
     elAnswers.innerHTML = '';
 
@@ -669,11 +574,9 @@ html,body{
     locked = true;
 
     stopRepeatTimer();
-    stopExpLoop();
     speechSeqId++;
     if(speechOK) window.speechSynthesis.cancel();
     clearAllGlow();
-    closeExplanation();
 
     var all = elAnswers.querySelectorAll('.answer-btn');
     for(var i = 0; i < all.length; i++) all[i].classList.add('locked');
@@ -692,11 +595,9 @@ html,body{
   function prevQuestion(){
     if(currentIndex <= 0) return;
     stopRepeatTimer();
-    stopExpLoop();
     speechSeqId++;
     if(speechOK) window.speechSynthesis.cancel();
     clearAllGlow();
-    closeExplanation();
     currentIndex--;
     renderQuestion();
   }
@@ -704,7 +605,6 @@ html,body{
   /* ═══════════════════ RESULT & SCORING LOGIC ═══════════════════ */
   function showResult(){
     stopRepeatTimer();
-    stopExpLoop();
     speechSeqId++;
     if(speechOK) window.speechSynthesis.cancel();
     clearAllGlow();
@@ -724,7 +624,7 @@ html,body{
     var score8_11 = answers[7] + answers[8] + answers[9] + answers[10];
 
     // Priority Check Structure
-    var triageCode = "3"; // Default (3 = R)
+    var triageCode = "R"; // Default 
     var isP1 = false;
     var isP2 = false;
     var isR = false;
@@ -743,7 +643,7 @@ html,body{
     // Apply strict hierarchy: P1 overrides P2, P2 overrides R.
     if(isP1) triageCode = "1";
     else if(isP2) triageCode = "2";
-    else triageCode = "3";
+    else triageCode = "R";
 
     // Format Result HTML String (Low-key for clerks)
     var resHTML = "<div style='font-size:1.1rem; padding:10px; color:#444; border-top: 1px solid #eee; margin-top: 20px; padding-top: 20px;'>";
@@ -753,7 +653,7 @@ html,body{
     resHTML += "</div>";
 
     // Clerks Ref Code Format: T-[TriageCategory]-[Score]
-    resHTML += "<div style='text-align:right; font-size:1rem; color:#aaa; margin-top:30px; letter-spacing: 1px;'>";
+    resHTML += "<div style='text-align:right; font-size:1.1rem; color:#888; margin-top:30px; letter-spacing: 1px; font-weight:bold;'>";
     resHTML += "Ref: T-" + triageCode + "-" + score8_11;
     resHTML += "</div>";
 
@@ -783,26 +683,18 @@ html,body{
         window.speechSynthesis.cancel();
       }
       elIntro.style.display = 'none';
-      startQuiz();
+      
+      // Delay to ensure previous speech is completely cleared before reading Q1
+      setTimeout(startQuiz, 300); 
     });
 
     elPrevBtn.addEventListener('click', prevQuestion);
     elReplay.addEventListener('click', function(){
-      closeExplanation();
-      stopExpLoop();
       stopRepeatTimer();
       speakSequence();
     });
-    elExplainBtn.addEventListener('click', function(){
-      toggleExplanation();
-    });
-    elExplainListen.addEventListener('click', function(){
-      var q = questions[currentIndex];
-      startExpLoop(q.explanation);
-    });
     elRestart.addEventListener('click', function(){
       stopRepeatTimer();
-      stopExpLoop();
       speechSeqId++;
       if(speechOK) window.speechSynthesis.cancel();
       clearAllGlow();
