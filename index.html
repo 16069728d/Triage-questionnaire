@@ -302,8 +302,8 @@ html,body{
       explanation: '請問你想約邊個時間做物理治療？揀咗之後就唔可以改㗎啦。',
       options: [
         { label: '任何時間', emoji: '🕒', val: '任何時間', color: 'clr-blue' },
-        { label: '上午 (8:45-12:30)', emoji: '🌅', val: '上午', color: 'clr-yellow' },
-        { label: '下午 (1:30-5:15)', emoji: '🌇', val: '下午', color: 'clr-orange' }
+        { label: '上午 (8:45-12:30)', emoji: '🌅', val: '上午 (8:45-12:30)', color: 'clr-yellow' },
+        { label: '下午 (1:30-5:15)', emoji: '🌇', val: '下午 (1:30-5:15)', color: 'clr-orange' }
       ]
     },
     {
@@ -318,78 +318,78 @@ html,body{
       id: 3, text: '3. 你有否因轉介書內的病情而曾接受公立醫院物理治療 (6個月內)？', 
       explanation: '過去六個月內，你有冇因為今次轉介信上面嘅同一個病，去過政府醫院睇物理治療？',
       options: [
-        { label: '有', emoji: '✔️', val: 1, color: 'clr-red' },
-        { label: '沒有', emoji: '❌', val: 0, color: 'clr-blue' }
+        { label: '有', emoji: '✔️', val: '有', numVal: 1, color: 'clr-red' },
+        { label: '沒有', emoji: '❌', val: '沒有', numVal: 0, color: 'clr-blue' }
       ]
     },
     {
       id: 4, text: '4. 最近3個月內你是否因轉介書內的病情而需住院接受治療？\n(如有住院，出院日期是？)', 
       explanation: '過去三個月內，你有冇因為今次轉介信上面嘅病，而需要入院留醫？如果有住院，出院日期係幾時？',
       options: [
-        { label: '有', emoji: '✔️', val: 1, color: 'clr-red', hasSub: true },
-        { label: '沒有', emoji: '❌', val: 0, color: 'clr-blue' }
+        { label: '有', emoji: '✔️', val: '有', numVal: 1, color: 'clr-red', hasSub: true },
+        { label: '沒有', emoji: '❌', val: '沒有', numVal: 0, color: 'clr-blue' }
       ]
     },
     {
       id: 5, text: '5. 這次治療轉介書內的病情是否屬於工傷 (3個月內)？\n(如是工傷，工傷日期是？已報勞工處？)', 
       explanation: '今次轉介信上面講嘅病，係咪屬於三個月之內發生嘅工傷？如果係工傷，工傷日期係幾時？同埋報咗勞工處未？',
       options: [
-        { label: '是', emoji: '✔️', val: 1, color: 'clr-red', hasSub: true },
-        { label: '否', emoji: '❌', val: 0, color: 'clr-blue' }
+        { label: '是', emoji: '✔️', val: '是', numVal: 1, color: 'clr-red', hasSub: true },
+        { label: '否', emoji: '❌', val: '否', numVal: 0, color: 'clr-blue' }
       ]
     },
     {
       id: 6, text: '6. 現在是否因這個轉介書內的病情而放病假？', 
       explanation: '你依家有冇因為今次呢個病而放緊病假？',
       options: [
-        { label: '有', emoji: '✔️', val: 1, color: 'clr-red' },
-        { label: '沒有', emoji: '❌', val: 0, color: 'clr-blue' }
+        { label: '有', emoji: '✔️', val: '有', numVal: 1, color: 'clr-red' },
+        { label: '沒有', emoji: '❌', val: '沒有', numVal: 0, color: 'clr-blue' }
       ]
     },
     {
       id: 7, text: '7. 你的病情是否因嚴重意外受傷引起 (3個月內)？\n(例如：骨折、交通意外、高處墮下等等)', 
       explanation: '你今次嘅病，係咪因為三個月內發生嘅嚴重意外引起？例如：骨折、交通意外、或者由高處跌落嚟等等？',
       options: [
-        { label: '有', emoji: '✔️', val: 1, color: 'clr-red' },
-        { label: '沒有', emoji: '❌', val: 0, color: 'clr-blue' }
+        { label: '有', emoji: '✔️', val: '有', numVal: 1, color: 'clr-red' },
+        { label: '沒有', emoji: '❌', val: '沒有', numVal: 0, color: 'clr-blue' }
       ]
     },
     {
       id: 8, text: '8. 這個轉介書內的病情持續了多久？', 
       explanation: '轉介信上面講嘅呢個病，已經痛咗或者維持咗幾耐？',
       options: [
-        { label: '多過3個月', emoji: '🕒', val: 1, color: 'clr-blue' },
-        { label: '多過6個星期', emoji: '🕓', val: 2, color: 'clr-yellow' },
-        { label: '少過6個星期', emoji: '🕔', val: 3, color: 'clr-red' }
+        { label: '多過3個月', emoji: '🕒', val: '多過3個月', numVal: 1, color: 'clr-blue' },
+        { label: '多過6個星期', emoji: '🕓', val: '多過6個星期', numVal: 2, color: 'clr-yellow' },
+        { label: '少過6個星期', emoji: '🕔', val: '少過6個星期', numVal: 3, color: 'clr-red' }
       ]
     },
     {
       id: 9, text: '9. 整體來說，你的病情在最近四星期內之進展情況是：', 
       explanation: '整體嚟講，你覺得最近呢四個星期，你嘅病情係好轉咗，無變，定係差咗？',
       options: [
-        { label: '好轉', emoji: '📈', val: 1, color: 'clr-blue' },
-        { label: '沒有改變', emoji: '➖', val: 2, color: 'clr-yellow' },
-        { label: '惡化', emoji: '📉', val: 3, color: 'clr-red' }
+        { label: '好轉', emoji: '📈', val: '好轉', numVal: 1, color: 'clr-blue' },
+        { label: '沒有改變', emoji: '➖', val: '沒有改變', numVal: 2, color: 'clr-yellow' },
+        { label: '惡化', emoji: '📉', val: '惡化', numVal: 3, color: 'clr-red' }
       ]
     },
     {
       id: 10, text: '10. 這個轉介書內的病情/問題，對你應付工作/學業/家務等的能力有多大影響？', 
       explanation: '今次呢個病，對你平時返工、返學或者做家務等等嘅能力，影響有幾大？',
       options: [
-        { label: '沒有影響', emoji: '🟢', val: 1, color: 'clr-blue' },
-        { label: '輕度影響', emoji: '🟡', val: 2, color: 'clr-green' },
-        { label: '頗大影響，勉強完成', emoji: '🟠', val: 3, color: 'clr-orange' },
-        { label: '不能完成所需要求', emoji: '🔴', val: 4, color: 'clr-red' }
+        { label: '沒有影響', emoji: '🟢', val: '沒有影響', numVal: 1, color: 'clr-blue' },
+        { label: '輕度影響', emoji: '🟡', val: '輕度影響', numVal: 2, color: 'clr-green' },
+        { label: '頗大影響，勉強完成', emoji: '🟠', val: '頗大影響，勉強完成', numVal: 3, color: 'clr-orange' },
+        { label: '不能完成所需要求', emoji: '🔴', val: '不能完成所需要求', numVal: 4, color: 'clr-red' }
       ]
     },
     {
       id: 11, text: '11. 根據你今天的情況，你的痛楚/麻痺/僵硬/乏力等病徵的嚴重程度是：\n(例如：經常影響至不能入睡)', 
       explanation: '根據你今日嘅感覺，你覺得痛楚、麻痺、僵硬或者冇力等等嘅嚴重程度係點？極嚴重即係例如經常影響到瞓唔著。',
       options: [
-        { label: '沒有問題', emoji: '🟢', val: 1, color: 'clr-blue' },
-        { label: '輕微 / 一般', emoji: '🟡', val: 2, color: 'clr-green' },
-        { label: '嚴重', emoji: '🟠', val: 3, color: 'clr-orange' },
-        { label: '極嚴重', emoji: '🔴', val: 4, color: 'clr-red' }
+        { label: '沒有問題', emoji: '🟢', val: '沒有問題', numVal: 1, color: 'clr-blue' },
+        { label: '輕微 / 一般', emoji: '🟡', val: '輕微 / 一般', numVal: 2, color: 'clr-green' },
+        { label: '嚴重', emoji: '🟠', val: '嚴重', numVal: 3, color: 'clr-orange' },
+        { label: '極嚴重', emoji: '🔴', val: '極嚴重', numVal: 4, color: 'clr-red' }
       ]
     }
   ];
@@ -443,7 +443,7 @@ html,body{
         var v = voices[i];
         var lang = (v.lang || '').toLowerCase();
         var name = (v.name || '').toLowerCase();
-        if(lang.indexOf('zh-cn') !== -1 || name.indexOf('mandarin') !== -1 || name.indexOf('普通话') !== -1 || name.indexOf('國語') !== -1) continue;
+        if(lang.indexOf('zh-cn') !== -1 || name.indexOf('mandarin') !== -1 || name.indexOf('普通话') !== -1 || name.indexOf('國语') !== -1) continue;
         if(lang.indexOf('zh') === 0){ cantoneseVoice = v; break; }
       }
     }
@@ -458,9 +458,19 @@ html,body{
     for(var i = 0; i < btns.length; i++) btns[i].classList.remove('glow');
   }
 
-  function getVal(ans) {
+  function getValStr(ans) {
     if (ans !== null && typeof ans === 'object') return ans.val;
     return ans;
+  }
+  
+  function getNumVal(idx) {
+      var ans = answers[idx];
+      var qOpts = questions[idx].options;
+      var valStr = getValStr(ans);
+      for (var i=0; i<qOpts.length; i++) {
+          if (qOpts[i].val === valStr) return qOpts[i].numVal;
+      }
+      return 0;
   }
 
   function startRepeatTimer(){
@@ -604,7 +614,7 @@ html,body{
         if (btnLocked) return;
         btnLocked = true;
 
-        var ansObj = { val: 1 };
+        var ansObj = { val: existingAns.val || getValStr(answers[currentIndex]) };
         var dInput = document.getElementById('subq-date');
         
         if (qId === 4) {
@@ -643,7 +653,7 @@ html,body{
     }
 
     // Only speak the prompt if it's the first time clicking (no existing data)
-    if (Object.keys(existingAns).length === 0) {
+    if (!existingAns.date) {
         if(speechOK && speechEnabled) {
            window.speechSynthesis.cancel();
            var msg = (qId === 4) ? '請選擇出院日期' : '請選擇工傷日期，同埋確認係咪已經報咗勞工處';
@@ -672,16 +682,16 @@ html,body{
     elSubArea.style.display = 'none';
     elSubArea.innerHTML = '';
 
-    var currentAns = getVal(answers[currentIndex]);
+    var currentAnsStr = getValStr(answers[currentIndex]);
 
     for(var i=0; i<q.options.length; i++) {
         var opt = q.options[i];
-        var isSelected = (currentAns === opt.val);
+        var isSelected = (currentAnsStr === opt.val);
         addButton(opt.emoji, opt.label, opt, opt.color, isSelected);
     }
     
     // Auto-expand sub-area if previously selected
-    if (q.options[0].hasSub && currentAns === 1) {
+    if (q.options[0].hasSub && currentAnsStr === q.options[0].val) {
         renderSubArea(q.id);
     }
 
@@ -723,6 +733,7 @@ html,body{
         speechSeqId++;
         if(speechOK) window.speechSynthesis.cancel();
         clearAllGlow();
+        answers[currentIndex] = { val: opt.val };
         renderSubArea(questions[currentIndex].id);
     } else {
         locked = true;
@@ -761,17 +772,13 @@ html,body{
 
     elQuiz.style.display = 'none';
     elResult.style.display = 'block';
-
-    // Retrieve variables for logic rules
-    var ans1 = getVal(answers[0]); // Q1 Time preference
-    var ans2 = getVal(answers[1]); // Q2 Implants
     
-    // Q3 to Q7 check (value 1 represents "Yes/有/是")
-    var q3_yes = (getVal(answers[2]) === 1);
-    var q4_7_yes = (getVal(answers[3]) === 1 || getVal(answers[4]) === 1 || getVal(answers[5]) === 1 || getVal(answers[6]) === 1);
+    // Q3 to Q7 check (numVal 1 represents "Yes/有/是")
+    var q3_yes = (getNumVal(2) === 1);
+    var q4_7_yes = (getNumVal(3) === 1 || getNumVal(4) === 1 || getNumVal(5) === 1 || getNumVal(6) === 1);
     
     // Q8-Q11 Score
-    var score8_11 = getVal(answers[7]) + getVal(answers[8]) + getVal(answers[9]) + getVal(answers[10]);
+    var score8_11 = getNumVal(7) + getNumVal(8) + getNumVal(9) + getNumVal(10);
 
     // Priority Check Structure
     var triageCode = "R"; // Default 
@@ -797,16 +804,23 @@ html,body{
 
     // Format Result HTML String (Visible to Clerks only)
     var resHTML = "<div style='font-size:1.1rem; padding:10px; color:#444; border-top: 1px solid #eee; margin-top: 20px; padding-top: 20px;'>";
-    resHTML += "<strong>紀錄摘要：</strong><br><br>";
-    resHTML += "時間偏好: " + ans1 + "<br>";
-    resHTML += "電子儀器: " + ans2 + "<br>";
+    resHTML += "<strong>全卷答案摘要：</strong><br><br>";
     
-    if (answers[3] && answers[3].date) {
-        resHTML += "出院日期: " + answers[3].date + "<br>";
+    for (var k=0; k<questions.length; k++) {
+        var ansObj = answers[k];
+        var ansStr = getValStr(ansObj);
+        if (!ansStr) ansStr = '未回答';
+        
+        resHTML += "Q" + (k+1) + ". " + ansStr + "<br>";
+        
+        if (k === 3 && ansObj && ansObj.date) {
+            resHTML += "&nbsp;&nbsp;↳ 出院日期: " + ansObj.date + "<br>";
+        }
+        if (k === 4 && ansObj && ansObj.date) {
+            resHTML += "&nbsp;&nbsp;↳ 工傷日期: " + ansObj.date + " (已報勞工處: " + ansObj.labor + ")<br>";
+        }
     }
-    if (answers[4] && answers[4].date) {
-        resHTML += "工傷日期: " + answers[4].date + " (已報勞工處: " + answers[4].labor + ")<br>";
-    }
+    
     resHTML += "</div>";
 
     // Clerks Ref Code Format: [TriageCategory]-[Score]
