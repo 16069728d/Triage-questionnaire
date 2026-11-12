@@ -809,9 +809,9 @@ html,body{
     }
     resHTML += "</div>";
 
-    // Clerks Ref Code Format: T-[TriageCategory]-[Score]
+    // Clerks Ref Code Format: [TriageCategory]-[Score]
     resHTML += "<div style='text-align:right; font-size:1.1rem; color:#888; margin-top:30px; letter-spacing: 1px; font-weight:bold;'>";
-    resHTML += "Ref: T-" + triageCode + "-" + score8_11;
+    resHTML += "Ref: " + triageCode + "-" + score8_11;
     resHTML += "</div>";
 
     elResultScore.innerHTML = resHTML;
