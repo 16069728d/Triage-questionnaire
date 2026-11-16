@@ -153,6 +153,10 @@ html,body{
   transform:scale(1.04);opacity:1!important;filter:none!important;
   box-shadow:0 0 0 5px #fff,0 5px 0 rgba(0,0,0,.22);
 }
+.answer-btn span:last-child {
+  text-align: left;
+  line-height: 1.3;
+}
 
 .answer-btn.glow{
   animation:glowPulse .7s ease-in-out infinite alternate;
@@ -393,14 +397,14 @@ html,body{
       ]
     },
     {
-      id: 11, text: '11. 根據你今天的情況，你的痛楚/麻痺/僵硬/乏力等病徵的嚴重程度是：\n(例如：經常影響至不能入睡)', 
+      id: 11, text: '11. 根據你今天的情況，你的痛楚/麻痺/僵硬/乏力等病徵的嚴重程度是：', 
       keyword: '嚴重程度',
       explanation: '根據你今日嘅感覺，你覺得痛楚、麻痺、僵硬或者冇力等等嘅嚴重程度係點？極嚴重即係例如經常影響到瞓唔著。',
       options: [
         { label: '沒有問題', emoji: '🟢', val: '沒有問題', numVal: 1, color: 'clr-blue' },
         { label: '輕微 / 一般', emoji: '🟡', val: '輕微 / 一般', numVal: 2, color: 'clr-green' },
         { label: '嚴重', emoji: '🟠', val: '嚴重', numVal: 3, color: 'clr-orange' },
-        { label: '極嚴重', emoji: '🔴', val: '極嚴重', numVal: 4, color: 'clr-red' }
+        { label: '極嚴重 (例如：經常影響至不能入睡)', emoji: '🔴', val: '極嚴重 (例如：經常影響至不能入睡)', numVal: 4, color: 'clr-red' }
       ]
     }
   ];
